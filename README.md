@@ -4,17 +4,18 @@ Automatically detect and import components or modules.
 
 <img src="screenshot.png" alt="autoimport screenshot" />
 
-## Motivations
+## Motivation
 
 It's very common to have many components in one file as the project grows,
 and several frequently-used modules may be imported in almost every file.
 Therefore, this plugin is for reducing the code of imports. You can treat those
 components as global but they're being injected locally whenever required.
 
+## Install
 
-## Feature
-
-* Can detect new created components without restart the dev server.
+```bash
+npm i -D vite-plugin-autoimport
+```
 
 ## All options
 
@@ -62,6 +63,10 @@ Component names will be normalized to **upper camel case**, for example:
 import MyComponent from '../my-component.svelte'
 import MyAnotherComponent from '../my_another_component.svelte'
 ```
+
+## Feature
+
+* Can detect new created components without restart the dev server.
 
 ## Note
 

@@ -45,6 +45,7 @@ vite: {
       },
 
       // autoimport only for .svelte files
+      // and only search for .svelte files inside components
       include: ['**/*.svelte'],
 
       // node_modules is ignored by default
@@ -66,7 +67,7 @@ import MyAnotherComponent from '../my_another_component.svelte'
 
 ## Feature
 
-* Can detect new created components without restart the dev server.
+* Can detect new created components without restarting the dev server.
 
 ## Note
 

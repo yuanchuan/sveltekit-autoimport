@@ -2,7 +2,8 @@
 
 Automatically detect and import components or modules.
 
-<img src="screenshot.png" alt="autoimport screenshot" />
+![autoimport screenshot](https://user-images.githubusercontent.com/250426/115530849-b9d68480-a2c6-11eb-819b-7a88f584276e.png)
+
 
 ## Motivation
 

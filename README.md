@@ -17,7 +17,7 @@ components as global but they're being injected locally whenever required.
 npm i -D vite-plugin-autoimport
 ```
 
-## All options
+## Example
 
 ```js
 const { autoImport } from 'vite-plugin-autoimport';

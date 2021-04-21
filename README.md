@@ -20,7 +20,7 @@ npm i -D vite-plugin-autoimport
 ## Example
 
 ```js
-const { autoImport } from 'vite-plugin-autoimport';
+const { autoImport } = require('vite-plugin-autoimport');
 
 // svelte.config.cjs
 vite: {

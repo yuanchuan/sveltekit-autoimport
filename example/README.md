@@ -1,5 +1,3 @@
-# Example for vite-plugin-autoimport
-
 ## How to run
 
 ```bash

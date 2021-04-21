@@ -1,0 +1,27 @@
+{
+  "name": "vite-plugin-autoimport",
+  "version": "1.0.0",
+  "description": "Automatically detect and import components or modules",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuanchuan/vite-plugin-autoimport.git"
+  },
+  "keywords": [
+    "vite",
+    "sveltekit"
+  ],
+  "author": "yuanchuan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yuanchuan/vite-plugin-autoimport/issues"
+  },
+  "homepage": "https://github.com/yuanchuan/vite-plugin-autoimport#readme",
+  "dependencies": {
+    "@rollup/pluginutils": "^4.1.0",
+    "estree-walker": "^2.0.2"
+  }
+}

@@ -31,36 +31,38 @@ npm i -D vite-plugin-autoimport
 const { autoImport } = require('vite-plugin-autoimport');
 
 module.exports = {
-  vite: {
-    plugins: [
-      autoImport({
+  kit: {
+    vite: {
+      plugins: [
+        autoImport({
 
-        // where to search for the components
-        components: [
-          './src/components',
-          './src/routes/_fragments',
-        ],
+          // where to search for the components
+          components: [
+            './src/components',
+            './src/routes/_fragments',
+          ],
 
-        // some frequently used modules
-        module: {
-          svelte: ['onMount', 'createEventDispatcher']
-        },
+          // some frequently used modules
+          module: {
+            svelte: ['onMount', 'createEventDispatcher']
+          },
 
-        // manually import
-        mapping: {
-          API:  `import API from './src/api'`,
-          Icon: `import * as Icon from '$lib/icon'`,
-        },
+          // manually import
+          mapping: {
+            API:  `import API from './src/api'`,
+            Icon: `import * as Icon from '$lib/icon'`,
+          },
 
-        // autoimport only for .svelte files
-        // and only search for .svelte files inside components
-        include: ['**/*.svelte'],
+          // autoimport only for .svelte files
+          // and only search for .svelte files inside components
+          include: ['**/*.svelte'],
 
-        // node_modules is ignored by default
-        exclude: ['node_modules'],
+          // node_modules is ignored by default
+          exclude: ['node_modules'],
 
-      })
-    ]
+        })
+      ]
+    }
   }
 }
 ```

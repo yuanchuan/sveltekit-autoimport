@@ -1,7 +1,6 @@
-const fs = require('fs');
 const path = require('path');
 const { walk } = require('estree-walker');
-const { attachScopes, createFilter } = require('@rollup/pluginutils');
+const { createFilter } = require('@rollup/pluginutils');
 
 exports.autoImport = autoImport;
 
@@ -29,14 +28,43 @@ function autoImport({ components, module, mapping, include, exclude } = {}) {
         return null;
       }
       const ast = this.parse(code);
-      const scope = attachScopes(ast, 'scope');
       const imported = new Set();
+      const maybeUsed = new Set();
       walk(ast, {
-        enter(node) {
+        enter(node, parent) {
           if (node.type === 'ImportDeclaration') {
             node.specifiers.forEach(sf => {
               imported.add(sf.local.name);
             });
+          }
+          if (node.type === 'Identifier') {
+            switch (parent.type) {
+              case 'VariableDeclarator': {
+                if (parent.init && parent.init.name == node.name) {
+                  maybeUsed.add(node.name);
+                }
+                break;
+              }
+              case 'Property': {
+                if (parent.vaue && parent.value.name === node.name) {
+                  maybeUsed.add(node.name);
+                }
+                break;
+              }
+              case 'ArrayExpression':
+              case 'CallExpression':
+              case 'NewExpression':
+              case 'MemberExpression': {
+                maybeUsed.add(node.name);
+                break;
+              }
+            }
+          }
+          if (node.type == 'ExportDefaultDeclaration') {
+            let name = node.declaration.name;
+            if (maybeUsed.has(name)) {
+              maybeUsed.delete(name);
+            }
           }
         }
       });
@@ -44,10 +72,10 @@ function autoImport({ components, module, mapping, include, exclude } = {}) {
         if (/\W/.test(name)) {
           return false;
         }
-        if (imported.has(name) || scope.contains(name)) {
+        if (imported.has(name)) {
           return false;
         }
-        if (code.includes(name)) {
+        if (maybeUsed.has(name)) {
           let importValue = (typeof value == 'function')
             ? value(path.dirname(filePath))
             : value;

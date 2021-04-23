@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const { walk } = require('estree-walker');
 const { createFilter } = require('@rollup/pluginutils');

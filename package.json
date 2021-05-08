@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-autoimport",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Automatically detect and import components or modules",
   "main": "index.js",
   "scripts": {

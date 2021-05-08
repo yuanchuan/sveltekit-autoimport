@@ -23,7 +23,7 @@ I only use it for `SvelteKit` projects. PRs are welcome to add support for `Vue`
 npm i -D vite-plugin-autoimport
 ```
 
-## Configurations
+## Configuration
 
 ```js
 // svelte.config.js

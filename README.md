@@ -26,11 +26,11 @@ npm i -D vite-plugin-autoimport
 ## Configurations
 
 ```js
-// svelte.config.cjs
+// svelte.config.js
 
-const { autoImport } = require('vite-plugin-autoimport');
+import autoImport from 'vite-plugin-autoimport';
 
-module.exports = {
+export default {
   kit: {
     vite: {
       plugins: [
@@ -49,8 +49,8 @@ module.exports = {
 
           // manually import
           mapping: {
-            API:  `import API from './src/api'`,
-            Icon: `import * as Icon from '$lib/icon'`,
+            API:  `import API from '~/src/api'`,
+            Icon: `import * as Icon from '$components/icon'`,
           },
 
           // autoimport only for .svelte files
@@ -58,7 +58,7 @@ module.exports = {
           include: ['**/*.svelte'],
 
           // node_modules is ignored by default
-          exclude: ['node_modules'],
+          exclude: ['**/node_modules/**'],
 
         })
       ]

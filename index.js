@@ -3,7 +3,7 @@ const path = require('path');
 const { walk } = require('estree-walker');
 const { createFilter } = require('@rollup/pluginutils');
 
-exports.autoImport = autoImport;
+module.exports = autoImport;
 
 /**
  * @param {string|string[]} [components] - Component paths

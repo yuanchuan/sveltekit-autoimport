@@ -2,9 +2,6 @@
 <Test />
 
 <script>
-  // import Test from '../components/test.svelte';
-  // import { onMount } from 'svelte';
-
   onMount(() => {
     console.log('mounted');
   });

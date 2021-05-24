@@ -132,8 +132,14 @@ function createMapping({ components, module, mapping, filter }) {
 
   // Custom mapping is useful for overwriting and
   // import things other than components
-  Object.assign(importMapping, makeLiteral(mapping));
-
+  Object.entries(makeLiteral(mapping)).forEach(([name, value]) => {
+    if (typeof value === 'string') {
+      importMapping[name] = value;
+    }
+    if (typeof value === 'function') {
+      importMapping[name] = `;let ${name} = () => { ${value()} };`;
+    }
+  });
   return importMapping;
 }
 

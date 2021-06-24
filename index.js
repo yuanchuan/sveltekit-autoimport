@@ -1,9 +1,9 @@
-const fs = require('fs');
-const path = require('path');
-const { walk } = require('estree-walker');
-const { createFilter } = require('@rollup/pluginutils');
+import fs from 'fs';
+import path from 'path';
+import * as svelte from 'svelte/compiler';
+import { walk } from 'estree-walker';
+import { createFilter } from '@rollup/pluginutils';
 
-module.exports = autoImport;
 
 /**
  * @param {string|string[]} [components] - Component paths
@@ -12,9 +12,11 @@ module.exports = autoImport;
  * @param {string|string[]} [include]
  * @param {string|String[]} [exclude]
  */
-function autoImport({ components, module, mapping, include, exclude } = {}) {
+export default function autoImport({ components, module, mapping, include, exclude } = {}) {
   const filter = createFilter(include, exclude);
+
   let importMapping = {};
+  let preprocess = [];
 
   const updateMapping = () => {
     importMapping = createMapping({ components, module, mapping, filter });
@@ -23,52 +25,100 @@ function autoImport({ components, module, mapping, include, exclude } = {}) {
   updateMapping();
 
   return {
-    name: 'autoImport',
-    transform: function(code, filePath) {
+    name: 'vite-plugin-autoimport',
+
+    enforce: 'pre',
+
+    // Must be processed before vite-plugin-svelte
+    async configResolved(config) {
+      let { plugins } = config;
+      let indexPluginSvelte = plugins.findIndex(n => n.name === 'vite-plugin-svelte');
+      let indexAutoImport = plugins.findIndex(n => n.name === 'vite-plugin-autoimport');
+      if (indexPluginSvelte < indexAutoImport) {
+        let autoImport = plugins[indexAutoImport];
+        plugins.splice(indexAutoImport, 1);
+        config.plugins = [
+          ...plugins.slice(0, indexPluginSvelte),
+          autoImport,
+          ...plugins.slice(indexPluginSvelte + 1)
+        ];
+      }
+      try {
+        let pkg = await import(path.join(config.inlineConfig.root, 'svelte.config.js'));
+        preprocess = pkg.default.preprocess;
+      } catch(e) {
+        console.warn('Error reading svelte.config.js');
+      }
+    },
+    async transform(code, filePath) {
       if (!filter(filePath) || /\/node_modules/.test(filePath)) {
         return null;
       }
-      const ast = this.parse(code);
+      let ast;
+      try {
+        if (preprocess.length) {
+          let result = await svelte.preprocess(code, preprocess);
+          code = result.code;
+        }
+        ast = svelte.parse(code);
+      } catch (e) {
+        return null;
+      }
+
       const imported = new Set();
       const maybeUsed = new Set();
-      walk(ast, {
-        enter(node, parent) {
-          if (node.type === 'ImportDeclaration') {
-            node.specifiers.forEach(sf => {
-              imported.add(sf.local.name);
-            });
-          }
-          if (node.type === 'Identifier') {
-            switch (parent.type) {
-              case 'VariableDeclarator': {
-                if (parent.init && parent.init.name == node.name) {
-                  maybeUsed.add(node.name);
+
+      if (ast.instance && ast.instance.content) {
+        walk(ast.instance.content, {
+          enter(node, parent) {
+            if (node.type === 'ImportDeclaration') {
+              node.specifiers.forEach(sf => {
+                imported.add(sf.local.name);
+              });
+            }
+            if (node.type === 'Identifier') {
+              switch (parent.type) {
+                case 'VariableDeclarator': {
+                  if (parent.init && parent.init.name == node.name) {
+                    maybeUsed.add(node.name);
+                  }
+                  break;
                 }
-                break;
-              }
-              case 'Property': {
-                if (parent.vaue && parent.value.name === node.name) {
-                  maybeUsed.add(node.name);
+                case 'Property': {
+                  if (parent.vaue && parent.value.name === node.name) {
+                    maybeUsed.add(node.name);
+                  }
+                  break;
                 }
-                break;
+                case 'ArrayExpression':
+                case 'CallExpression':
+                case 'NewExpression':
+                case 'MemberExpression': {
+                  maybeUsed.add(node.name);
+                  break;
+                }
               }
-              case 'ArrayExpression':
-              case 'CallExpression':
-              case 'NewExpression':
-              case 'MemberExpression': {
-                maybeUsed.add(node.name);
-                break;
+            }
+            if (node.type == 'ExportDefaultDeclaration') {
+              let name = node.declaration.name;
+              if (maybeUsed.has(name)) {
+                maybeUsed.delete(name);
               }
             }
           }
-          if (node.type == 'ExportDefaultDeclaration') {
-            let name = node.declaration.name;
-            if (maybeUsed.has(name)) {
-              maybeUsed.delete(name);
+        });
+      }
+
+      if (ast.html && ast.html.children) {
+        walk(ast.html.children, {
+          enter(node, parent) {
+            if (node.type == 'InlineComponent' && !/^svelte:/.test(node.name)) {
+              maybeUsed.add(node.name);
             }
           }
-        }
-      });
+        });
+      }
+
       Object.entries(importMapping).forEach(([name, value]) => {
         if (/\W/.test(name)) {
           return false;
@@ -80,7 +130,7 @@ function autoImport({ components, module, mapping, include, exclude } = {}) {
           let importValue = (typeof value == 'function')
             ? value(path.dirname(filePath))
             : value;
-          code = prependTo(code, importValue);
+          code = prependTo(code, importValue, ast.instance.start);
         }
       });
       return code;
@@ -160,8 +210,11 @@ function makeLiteral(obj) {
   return {};
 }
 
-function prependTo(code, injection) {
-  return '\n' + injection + '\n' + code;
+function prependTo(code, injection, start) {
+  let head = code.slice(0, start + 8);
+  let tail = code.slice(start + 8);
+
+  return head + '\n' + injection + '\n' + tail;
 }
 
 function toUpperCase(_, c) {

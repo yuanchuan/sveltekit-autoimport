@@ -115,6 +115,23 @@ export default function autoImport({ components, module, mapping, include, exclu
             if (node.type == 'InlineComponent' && !/^svelte:/.test(node.name)) {
               maybeUsed.add(node.name);
             }
+            if (node.type === 'Identifier') {
+              switch (parent.type) {
+                case 'Property': {
+                  if (parent.vaue && parent.value.name === node.name) {
+                    maybeUsed.add(node.name);
+                  }
+                  break;
+                }
+                case 'ArrayExpression':
+                case 'CallExpression':
+                case 'NewExpression':
+                case 'MemberExpression': {
+                  maybeUsed.add(node.name);
+                  break;
+                }
+              }
+            }
           }
         });
       }

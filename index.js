@@ -136,6 +136,7 @@ export default function autoImport({ components, module, mapping, include, exclu
         });
       }
 
+      let imports = [];
       Object.entries(importMapping).forEach(([name, value]) => {
         if (/\W/.test(name)) {
           return false;
@@ -147,9 +148,19 @@ export default function autoImport({ components, module, mapping, include, exclu
           let importValue = (typeof value == 'function')
             ? value(path.dirname(filePath))
             : value;
-          code = prependTo(code, importValue, ast.instance.start);
+          imports.push(importValue);
         }
       });
+
+      if (imports.length) {
+        let value = imports.join('\n');
+        if (ast.instance) {
+          code = prependTo(code, value, ast.instance.start);
+        } else {
+          code += `<script>${ value }</script>`;
+        }
+      }
+
       return code;
     },
     configureServer(server) {

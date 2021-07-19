@@ -192,7 +192,7 @@ function createMapping({ components, module, mapping, filter }) {
         moduleName = camelize(getLastDir(parsed.dir));
       }
       importMapping[moduleName] = target => {
-        let moduleFrom = path.relative(target, name);
+        let moduleFrom = normalizePath(path.relative(target, name));
         if (!moduleFrom.startsWith('.')) {
           moduleFrom = './' + moduleFrom;
         }
@@ -258,6 +258,10 @@ function camelize(name) {
 function getLastDir(dir) {
   let dirs = dir.split(path.sep).filter(n => n !== 'index');
   return dirs[dirs.length - 1];
+}
+
+function normalizePath(name) {
+  return name.replace(/\\/g, '/');
 }
 
 function traverse(root, fn) {

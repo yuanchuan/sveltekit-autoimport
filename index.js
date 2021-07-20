@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import * as svelte from 'svelte/compiler';
 import { walk } from 'estree-walker';
 import { createFilter } from '@rollup/pluginutils';
@@ -44,7 +45,10 @@ export default function autoImport({ components, module, mapping, include, exclu
         ];
       }
       try {
-        let pkg = await import(path.join(config.inlineConfig.root, 'svelte.config.js'));
+        let dirname = path.dirname(fileURLToPath(import.meta.url));
+        let relative = path.relative(dirname, config.inlineConfig.root);
+        let configFile = path.join(relative, './svelte.config.js');
+        let pkg = await import(normalizePath('./' + configFile));
         preprocess = pkg.default.preprocess;
       } catch(e) {
         console.warn('Error reading svelte.config.js');

@@ -2,7 +2,13 @@
 
 Automatically detect and import components or modules.
 
-![autoimport screenshot](https://user-images.githubusercontent.com/250426/115530849-b9d68480-a2c6-11eb-819b-7a88f584276e.png)
+### Before
+
+<img src="screenshots/new.png" />
+
+### After
+
+<img src="screenshots/after.png" />
 
 
 ## Motivation
@@ -49,7 +55,6 @@ export default {
 
 ```js
 // svelte.config.js
-
 import autoImport from 'vite-plugin-autoimport';
 
 export default {

@@ -49,7 +49,7 @@ export default function autoImport({ components, module, mapping, include, exclu
         let relative = path.relative(dirname, config.inlineConfig.root);
         let configFile = path.join(relative, './svelte.config.js');
         let pkg = await import(normalizePath('./' + configFile));
-        preprocess = pkg.default.preprocess;
+        preprocess = pkg.default.preprocess || [];
       } catch(e) {
         console.warn('Error reading svelte.config.js');
       }
@@ -60,7 +60,7 @@ export default function autoImport({ components, module, mapping, include, exclu
       }
       let ast;
       try {
-        if (preprocess.length) {
+        if (preprocess && preprocess.length) {
           let result = await svelte.preprocess(code, preprocess);
           code = result.code;
         }

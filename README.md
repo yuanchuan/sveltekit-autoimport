@@ -25,6 +25,28 @@ npm i -D vite-plugin-autoimport
 
 ## Configuration
 
+### Basic
+
+```js
+// svelte.config.js
+
+import autoImport from 'vite-plugin-autoimport';
+
+export default {
+  kit: {
+    vite: {
+      plugins: [
+        autoImport({
+          components: ['./src/components'],
+        })
+      ]
+    }
+  }
+}
+```
+
+### Full options
+
 ```js
 // svelte.config.js
 

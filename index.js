@@ -14,6 +14,9 @@ import { createFilter } from '@rollup/pluginutils';
  * @param {string|String[]} [exclude]
  */
 export default function autoImport({ components, module, mapping, include, exclude } = {}) {
+  if (!include) {
+    include = ['**/*.svelte'];
+  }
   const filter = createFilter(include, exclude);
 
   let importMapping = {};

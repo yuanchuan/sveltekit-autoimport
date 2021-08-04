@@ -4,7 +4,7 @@ Automatically detect and import components or modules.
 
 ### Before
 
-<img src="screenshots/new.png" />
+<img src="screenshots/before.png" />
 
 ### After
 

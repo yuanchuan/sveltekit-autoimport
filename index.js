@@ -97,6 +97,7 @@ export default function autoImport({ components, module, mapping, include, exclu
                   }
                   break;
                 }
+                case 'TaggedTemplateExpression':
                 case 'ArrayExpression':
                 case 'CallExpression':
                 case 'NewExpression':

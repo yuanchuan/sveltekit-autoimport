@@ -1,4 +1,5 @@
-import fs from 'fs';
+import { existsSync, statSync } from 'fs';
+import { readdir } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import * as svelte from 'svelte/compiler';
@@ -20,10 +21,12 @@ export default function autoImport({ components, module, mapping, include, exclu
   const filter = createFilter(include, exclude);
 
   let importMapping = {};
+  let componentPaths = [];
   let preprocess = [];
 
   const updateMapping = () => {
-    importMapping = createMapping({ components, module, mapping, filter });
+    [importMapping, componentPaths] =
+      createMapping({ components, module, mapping, filter });
   };
 
   updateMapping();
@@ -173,7 +176,6 @@ export default function autoImport({ components, module, mapping, include, exclu
       return code;
     },
     configureServer(server) {
-      let componentPaths = makeArray(components).map(n => path.resolve(n));
       if (componentPaths.length) {
         server.watcher
           .add(componentPaths)
@@ -186,20 +188,31 @@ export default function autoImport({ components, module, mapping, include, exclu
 
 function createMapping({ components, module, mapping, filter }) {
   const importMapping = {};
+  const componentPaths = [];
 
   // Read all components from given paths
   // and transform the import names into CamelCase
-  makeArray(components).forEach(comp => {
-    let componentPath = path.resolve(comp);
-    traverse(componentPath, name => {
-      if (!filter(name)) {
-        return false;
+  makeArray(components).forEach(async comp => {
+    let thisComp = comp;
+    let flat = false;
+    let prefix = '';
+    if (comp && typeof comp !== 'string') {
+      thisComp = comp.value || comp.name || comp.component || comp.directory;
+      if (comp.flat !== undefined) {
+        flat = !!comp.flat;
       }
-      let parsed = path.parse(name);
-      let moduleName = camelize(parsed.name);
-      if (parsed.name === 'index') {
-        moduleName = camelize(getLastDir(parsed.dir));
+      if (comp.prefix !== undefined) {
+        prefix = String(comp.prefix);
       }
+    }
+    if (!thisComp) {
+      // skip
+      return false;
+    }
+    let componentPath = path.resolve(String(thisComp));
+    componentPaths.push(componentPath);
+    for await (const name of traverse(componentPath, filter)) {
+      let moduleName = getModuleName(componentPath, name, flat, prefix);
       importMapping[moduleName] = target => {
         let moduleFrom = normalizePath(path.relative(target, name));
         if (!moduleFrom.startsWith('.')) {
@@ -207,7 +220,7 @@ function createMapping({ components, module, mapping, filter }) {
         }
         return `import ${moduleName} from '${moduleFrom}'`
       }
-    });
+    }
   });
 
   // Select methods or properties from a given module
@@ -227,7 +240,10 @@ function createMapping({ components, module, mapping, filter }) {
       importMapping[name] = `;let ${name} = () => { ${value()} };`;
     }
   });
-  return importMapping;
+  return [
+    importMapping,
+    componentPaths,
+  ];
 }
 
 function makeArray(arr) {
@@ -250,7 +266,6 @@ function makeLiteral(obj) {
 function prependTo(code, injection, start) {
   let head = code.slice(0, start + 8);
   let tail = code.slice(start + 8);
-
   return head + '\n' + injection + '\n' + tail;
 }
 
@@ -260,7 +275,7 @@ function toUpperCase(_, c) {
 
 function camelize(name) {
   return name
-    .replace(/[-_]+(.{1})/g, toUpperCase)
+    .replace(/[-_\/\\]+(.{1})/g, toUpperCase)
     .replace(/^(.{1})/, toUpperCase);
 }
 
@@ -273,21 +288,47 @@ function normalizePath(name) {
   return name.replace(/\\/g, '/');
 }
 
-function traverse(root, fn) {
-  if (!fs.existsSync(root)) {
-    return false;
-  }
-  if (!fs.statSync(root).isDirectory()) {
-    return false;
-  }
-  let originRoot = root;
-  fs.readdirSync(root).forEach(dir => {
-    dir = path.join(originRoot, dir);
-    let stat = fs.statSync(dir);
-    if (stat.isDirectory()) {
-      traverse(dir, fn);
-    } else if (stat.isFile()) {
-      fn(dir);
+function getModuleName(root, name, flat, prefix) {
+  let moduleName;
+  if (flat) {
+    let parsed = path.parse(name);
+    moduleName = camelize(parsed.name);
+    if (parsed.name === 'index') {
+      moduleName = camelize(getLastDir(parsed.dir));
     }
-  });
+  } else {
+    let parsed = (root === name)
+      ? path.parse(path.parse(name).base)
+      : path.parse(path.relative(root, name));
+    moduleName = camelize(parsed.dir + '_' + parsed.name);
+    if (parsed.name === 'index') {
+      moduleName = camelize(parsed.dir);
+    }
+  }
+  if (prefix) {
+    moduleName = camelize(prefix) + moduleName;
+  }
+  return moduleName;
+}
+
+async function* traverse(root, filter) {
+  if (!existsSync(root)) {
+    return false;
+  }
+  // single component
+  if (statSync(root).isFile()) {
+    return yield root;
+  }
+  if (!statSync(root).isDirectory()) {
+    return false;
+  }
+  const entries = await readdir(root, { withFileTypes: true });
+  for (const entry of entries) {
+    const name = path.join(root, entry.name);
+    if (entry.isDirectory()) {
+      yield* traverse(name, filter);
+    } else if (entry.isFile() && filter(name)) {
+      yield name;
+    }
+  }
 }

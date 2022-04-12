@@ -2,13 +2,16 @@ import autoImport from '../index.js';
 
 export default {
   kit: {
-    target: '#svelte',
     vite: {
       plugins: [
-
         autoImport({
-          include: ['**/*.svelte'],
-          components: ['./src/components'],
+          components: [
+            './src/components',
+
+            /* custom prefix */
+            { name: './src/routes/_shared', prefix: 'Shared' },
+          ],
+
           module: {
             svelte: ['onMount']
           },
@@ -17,4 +20,4 @@ export default {
       ]
     }
   }
-};
+}

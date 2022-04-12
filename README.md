@@ -39,7 +39,7 @@ export default {
 
 ## Name strategy
 
-By default component names will be **namespaced** with its directory names and
+By default the component names will be **namespaced** with its directory names and
 normalized to **upper camel case**. For example:
 
 ```html
@@ -78,7 +78,7 @@ So that
 
 ## Flat
 
-If the `flat` option is set to be true, no namespace is added.
+If the `flat` option is set to be true, no namespace will be added.
 
 ```js
 autoImport({

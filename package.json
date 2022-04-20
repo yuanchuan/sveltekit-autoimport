@@ -1,8 +1,8 @@
 {
   "name": "vite-plugin-autoimport",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Automatically detect and import components or modules",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,6 +24,7 @@
   "dependencies": {
     "@rollup/pluginutils": "^4.1.0",
     "estree-walker": "^2.0.2",
+    "magic-string": "^0.26.1",
     "svelte": "^3.47.0"
   }
 }

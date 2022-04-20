@@ -1,4 +1,4 @@
-import autoImport from '../index.js';
+import autoImport from '../src/index.js';
 
 export default {
   kit: {

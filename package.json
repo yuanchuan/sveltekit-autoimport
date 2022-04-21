@@ -4,7 +4,7 @@
   "description": "Automatically detect and import components or modules",
   "main": "src/index.js",
   "scripts": {
-    "test": "node --no-warnings --experimental-vm-modules node_modules/.bin/jest"
+    "test": "node --no-warnings --experimental-vm-modules ./node_modules/jest/bin/jest"
   },
   "repository": {
     "type": "git",

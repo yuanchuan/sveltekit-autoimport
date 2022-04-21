@@ -1,5 +1,4 @@
-import { existsSync, statSync } from 'fs';
-import { readdir } from 'fs/promises';
+import { existsSync, statSync, readdirSync } from 'fs';
 import path from 'path';
 
 import { walk } from 'estree-walker';
@@ -10,7 +9,6 @@ export function createMapping({ components, module, mapping, filter }) {
 
   // Read all components from given paths
   // and transform the import names into CamelCase
-
   makeArray(components).forEach(async comp => {
     let thisComp = comp;
     let flat = false;
@@ -32,7 +30,7 @@ export function createMapping({ components, module, mapping, filter }) {
     let componentPath = path.resolve(String(thisComp));
     componentPaths.push(componentPath);
 
-    for await (const name of traverse(componentPath, filter)) {
+    traverse(componentPath, filter, name => {
       let moduleName = getModuleName(componentPath, name, flat, prefix);
       importMapping[moduleName] = target => {
         let moduleFrom = normalizePath(path.relative(target, name));
@@ -41,7 +39,7 @@ export function createMapping({ components, module, mapping, filter }) {
         }
         return `import ${moduleName} from '${moduleFrom}'`
       }
-    }
+    });
   });
 
   // Select methods or properties from a given module
@@ -186,24 +184,24 @@ export function getModuleName(root, name, flat, prefix) {
   return moduleName;
 }
 
-export async function* traverse(root, filter) {
+export function traverse(root, filter, fn) {
   if (!existsSync(root)) {
     return false;
   }
   // single component
   if (statSync(root).isFile()) {
-    return yield root;
+    return root;
   }
   if (!statSync(root).isDirectory()) {
     return false;
   }
-  const entries = await readdir(root, { withFileTypes: true });
-  for (const entry of entries) {
-    const name = path.join(root, entry.name);
-    if (entry.isDirectory()) {
-      yield* traverse(name, filter);
-    } else if (entry.isFile() && filter(name)) {
-      yield name;
+  for (let dir of readdirSync(root)) {
+    dir = path.join(root, dir);
+    let stat = statSync(dir);
+    if (stat.isDirectory()) {
+      traverse(dir, filter, fn);
+    } else if (stat.isFile() && filter(dir)) {
+      fn(dir);
     }
   }
 }
@@ -212,7 +210,7 @@ function makeArray(arr) {
   if (Array.isArray(arr)) {
     return arr;
   }
-  if (arr === undefined && arr === null) {
+  if (arr === undefined || arr === null) {
     return [];
   }
   return [arr];

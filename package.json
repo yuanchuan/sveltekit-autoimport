@@ -4,7 +4,7 @@
   "description": "Automatically detect and import components or modules",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --no-warnings --experimental-vm-modules ./node_modules/jest/bin/jest"
   },
   "repository": {
     "type": "git",
@@ -26,5 +26,8 @@
     "estree-walker": "^2.0.2",
     "magic-string": "^0.26.1",
     "svelte": "^3.47.0"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1"
   }
 }

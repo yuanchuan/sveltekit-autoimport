@@ -39,10 +39,28 @@ export default {
 }
 ```
 
+It can be used as a preprocessor to transform code before other modules like `mdsvex`.
+
+```js
+import autoImport from 'vite-plugin-autoimport';
+import { mdsvex } from 'mdsvex';
+
+export default {
+  preprocess: [
+    autoImport({
+      components: ['./src/components'],
+      include: ['**/*.(svelte|md)'],
+    }),
+    mdsvex()
+  ],
+  kit: {}
+}
+```
+
 ## Name strategy
 
-By default the component names will be **namespaced** with its directory names and
-normalized to **upper camel case**. For example:
+By default the component names will be **namespaced** with their directory names and
+then normalized to **upper camel case** format. For example:
 
 ```html
 <MyComponent />

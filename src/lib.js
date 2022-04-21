@@ -184,7 +184,6 @@ export function getModuleName(root, name, flat, prefix) {
   return moduleName;
 }
 
-
 export function traverse(root, filter, fn) {
   if (!existsSync(root)) {
     return false;

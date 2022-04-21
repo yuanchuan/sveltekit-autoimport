@@ -27,7 +27,7 @@ export default function autoImport({ components, module, mapping, include, exclu
       createMapping({ components, module, mapping, filter });
   }
 
-  function transformCode(code, ast, filePath) {
+  function transformCode(code, ast, filename) {
     const { imported, maybeUsed } = walkAST(ast);
     const imports = [];
     Object.entries(importMapping).forEach(([name, value]) => {
@@ -39,7 +39,7 @@ export default function autoImport({ components, module, mapping, include, exclu
       }
       if (maybeUsed.has(name)) {
         let importValue = (typeof value == 'function')
-          ? value(path.dirname(filePath))
+          ? value(path.dirname(filename))
           : value;
         imports.push(importValue);
       }
@@ -52,7 +52,11 @@ export default function autoImport({ components, module, mapping, include, exclu
         code += `<script>${ value }</script>`;
       }
     }
-    return code;
+    let s = new MagicString(code, { filename });
+    return {
+      code: s.toString(),
+      map: s.generateMap(),
+    }
   }
 
   updateMapping();
@@ -87,8 +91,8 @@ export default function autoImport({ components, module, mapping, include, exclu
       }
     },
 
-    async transform(code, filePath) {
-      if (!filter(filePath) || /\/node_modules/.test(filePath)) {
+    async transform(code, filename) {
+      if (!filter(filename) || /\/node_modules/.test(filename)) {
         return null;
       }
       let ast;
@@ -101,7 +105,7 @@ export default function autoImport({ components, module, mapping, include, exclu
       } catch (e) {
         return null;
       }
-      return transformCode(code, ast, filePath);
+      return transformCode(code, ast, filename);
     },
 
     configureServer(server) {
@@ -124,12 +128,7 @@ export default function autoImport({ components, module, mapping, include, exclu
       } catch (e) {
         return null;
       }
-      const code = transformCode(content, ast, filename);
-      const s = new MagicString(code, { filename });
-      return {
-        code: s.toString(),
-        map: s.generateMap(),
-      }
+      return transformCode(content, ast, filename);
     }
 
   }

@@ -1,6 +1,5 @@
 import { existsSync, statSync, readdirSync } from 'fs';
 import path from 'path';
-
 import { walk } from 'estree-walker';
 
 export function createMapping({ components, module, mapping, filter }) {

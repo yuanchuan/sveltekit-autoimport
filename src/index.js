@@ -3,9 +3,7 @@ import { fileURLToPath } from 'url';
 import * as svelte from 'svelte/compiler';
 import { createFilter } from '@rollup/pluginutils';
 import MagicString from 'magic-string';
-
 import { createMapping, walkAST, prependTo, normalizePath } from './lib.js';
-
 
 /**
  * @param {string|string[]} [components] - Component paths

@@ -10,7 +10,6 @@ export function createMapping({ components, module, mapping, filter }) {
 
   // Read all components from given paths
   // and transform the import names into CamelCase
-
   makeArray(components).forEach(async comp => {
     let thisComp = comp;
     let flat = false;
@@ -212,7 +211,7 @@ function makeArray(arr) {
   if (Array.isArray(arr)) {
     return arr;
   }
-  if (arr === undefined && arr === null) {
+  if (arr === undefined || arr === null) {
     return [];
   }
   return [arr];

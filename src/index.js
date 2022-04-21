@@ -2,8 +2,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import * as svelte from 'svelte/compiler';
 import { createFilter } from '@rollup/pluginutils';
-import { createMapping, walkAST, prependTo, normalizePath } from './lib.js';
 import MagicString from 'magic-string';
+
+import { createMapping, walkAST, prependTo, normalizePath } from './lib.js';
+
 
 /**
  * @param {string|string[]} [components] - Component paths
@@ -113,7 +115,7 @@ export default function autoImport({ components, module, mapping, include, exclu
       }
     },
 
-    /* As svelte preprocessor */
+    // As svelte preprocessor
     markup({ content, filename }) {
       if (!filter(filename) || /\/node_modules/.test(filename)) {
         return null;

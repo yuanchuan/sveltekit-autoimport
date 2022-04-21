@@ -1,5 +1,7 @@
 # vite-plugin-autoimport
 
+![Build Status](https://github.com/yuanchuan/vite-plugin-autoimport/actions/workflows/ci.yml/badge.svg)
+
 Automatically detect and import components/modules for <a href="https://kit.svelte.dev/">SvelteKit</a> projects.
 
 ### Before

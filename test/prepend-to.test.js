@@ -12,7 +12,6 @@ describe('prependTo', () => {
     expect(result).toEqual('<script >\ncode\n</script>');
   });
 
-
   test('with attributes', () => {
     let result = prependTo('<script type="ts" x="x"></script>', 'code', 0);
     expect(result).toEqual('<script type="ts" x="x">\ncode\n</script>');

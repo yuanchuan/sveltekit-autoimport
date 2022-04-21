@@ -141,9 +141,9 @@ export function walkAST(ast) {
 }
 
 export function prependTo(code, injection, start) {
-  let position = (code.slice(start).indexOf('>') + 1);
-  let head = code.slice(0, start + position);
-  let tail = code.slice(start + position);
+  let index = start + (code.slice(start).indexOf('>') + 1);
+  let head = code.slice(0, index);
+  let tail = code.slice(index);
   return head + '\n' + injection + '\n' + tail;
 }
 

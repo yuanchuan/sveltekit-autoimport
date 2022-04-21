@@ -17,4 +17,9 @@ describe('prependTo', () => {
     expect(result).toEqual('<script type="ts" x="x">\ncode\n</script>');
   });
 
+  test('with offset', () => {
+    let result = prependTo('<p></p><script type="ts" x="x"></script>', 'code', 7);
+    expect(result).toEqual('<p></p><script type="ts" x="x">\ncode\n</script>');
+  });
+
 });

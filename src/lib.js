@@ -206,7 +206,7 @@ export function traverse(root, filter, fn) {
   }
 }
 
-function makeArray(arr) {
+export function makeArray(arr) {
   if (Array.isArray(arr)) {
     return arr;
   }

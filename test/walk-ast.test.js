@@ -33,4 +33,49 @@ describe('walk ast', () => {
     expect(Array.from(imported)).toEqual(['a', 'b', 'd']);
   });
 
+  test('declared variable', () => {
+    let { declared } = walkAST(svelte.parse(`
+      <script>
+        let s = abc;
+      </script>
+    `));
+    expect(Array.from(declared)).toEqual(['s']);
+  });
+
+  test('declared variable with destructed array', () => {
+    let { declared } = walkAST(svelte.parse(`
+      <script>
+        let [ s ] = ['hello'];
+      </script>
+    `));
+    expect(Array.from(declared)).toEqual(['s']);
+  });
+
+  test('declared variable with array spread', () => {
+    let { declared } = walkAST(svelte.parse(`
+      <script>
+        let [ ...s ] = ['hello'];
+      </script>
+    `));
+    expect(Array.from(declared)).toEqual(['s']);
+  });
+
+  test('declared variable with destructed object', () => {
+    let { declared } = walkAST(svelte.parse(`
+      <script>
+        let { s } = {};
+      </script>
+    `));
+    expect(Array.from(declared)).toEqual(['s']);
+  });
+
+  test('declared variable with object spread', () => {
+    let { declared } = walkAST(svelte.parse(`
+      <script>
+        let { ...s } = {};
+      </script>
+    `));
+    expect(Array.from(declared)).toEqual(['s']);
+  });
+
 });

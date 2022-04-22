@@ -34,13 +34,16 @@ export default function autoImport({ components, module, mapping, include, exclu
   }
 
   function transformCode(code, ast, filename) {
-    const { imported, maybeUsed } = walkAST(ast);
+    const { imported, maybeUsed, declared } = walkAST(ast);
     const imports = [];
     Object.entries(importMapping).forEach(([name, value]) => {
       if (/\W/.test(name)) {
         return false;
       }
       if (imported.has(name)) {
+        return false;
+      }
+      if (declared.has(name)) {
         return false;
       }
       if (maybeUsed.has(name)) {

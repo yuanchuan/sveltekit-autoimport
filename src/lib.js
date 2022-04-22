@@ -80,7 +80,7 @@ export function walkAST(ast) {
         if (node.type === 'Identifier') {
           switch (parent.type) {
             case 'VariableDeclarator': {
-              // Target name where `let v = name`
+              // Target v where `let name = v`
               if (parent.init && parent.init.name == node.name) {
                 maybeUsed.add(node.name);
               }
@@ -102,12 +102,11 @@ export function walkAST(ast) {
                 declared.add(node.name);
               }
             }
+            // Target v where `let { v } = {}`
             case 'Property': {
-              // Target v where `let { v } = {}`
               if (parent.value && parent.value.name === node.name) {
                 maybeUsed.add(node.name);
               }
-              // Same as above Target v where `let { v } = {}`
               if (parent.key && parent.key.name === node.name) {
                 declared.add(node.name);
               }

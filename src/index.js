@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url';
 import * as svelte from 'svelte/compiler';
 import { createFilter } from '@rollup/pluginutils';
 import MagicString from 'magic-string';
-import { createMapping, walkAST, prependTo, normalizePath } from './lib.js';
+import { createMapping, walkAST, prependTo, normalizePath, makeArray } from './lib.js';
 
 /**
  * @param {string|string[]} [components] - Component paths
@@ -16,7 +16,13 @@ export default function autoImport({ components, module, mapping, include, exclu
   if (!include) {
     include = ['**/*.svelte'];
   }
-  const filter = createFilter(include, exclude);
+  const filter = createFilter(include, [
+    ...makeArray(exclude),
+    '**/node_modules/**',
+    '**/.git/**',
+    '**/.svelte-kit/**',
+    '**/.svelte/**'
+  ]);
 
   let importMapping = {};
   let componentPaths = [];
@@ -92,7 +98,7 @@ export default function autoImport({ components, module, mapping, include, exclu
     },
 
     async transform(code, filename) {
-      if (!filter(filename) || /\/node_modules/.test(filename)) {
+      if (!filter(filename)) {
         return null;
       }
       let ast;
@@ -119,7 +125,7 @@ export default function autoImport({ components, module, mapping, include, exclu
 
     // As svelte preprocessor
     markup({ content, filename }) {
-      if (!filter(filename) || /\/node_modules/.test(filename)) {
+      if (!filter(filename)) {
         return null;
       }
       let ast;

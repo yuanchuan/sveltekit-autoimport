@@ -68,6 +68,7 @@ export function createMapping({ components, module, mapping, filter }) {
 export function walkAST(ast) {
   const imported = new Set();
   const maybeUsed = new Set();
+  const declared = new Set();
   if (ast.instance && ast.instance.content) {
     walk(ast.instance.content, {
       enter(node, parent) {
@@ -79,14 +80,36 @@ export function walkAST(ast) {
         if (node.type === 'Identifier') {
           switch (parent.type) {
             case 'VariableDeclarator': {
+              // Target name where `let v = name`
               if (parent.init && parent.init.name == node.name) {
                 maybeUsed.add(node.name);
               }
+              // Target v where `let v = name`
+              if (parent.id && parent.id.name == node.name) {
+                declared.add(node.name);
+              }
               break;
             }
+            case 'RestElement': {
+              // Target v where `let { ...v } = {} and let [...v] = []`
+              if (parent.argument && parent.argument.name == node.name) {
+                declared.add(node.name);
+              }
+            }
+            case 'ArrayPattern': {
+              // Target v where `let [v] = name`
+              if (parent.elements) {
+                declared.add(node.name);
+              }
+            }
             case 'Property': {
-              if (parent.vaue && parent.value.name === node.name) {
+              // Target v where `let { v } = {}`
+              if (parent.value && parent.value.name === node.name) {
                 maybeUsed.add(node.name);
+              }
+              // Same as above Target v where `let { v } = {}`
+              if (parent.key && parent.key.name === node.name) {
+                declared.add(node.name);
               }
               break;
             }
@@ -136,7 +159,7 @@ export function walkAST(ast) {
       }
     });
   }
-  return { imported, maybeUsed }
+  return { imported, maybeUsed, declared }
 }
 
 export function prependTo(code, injection, start) {

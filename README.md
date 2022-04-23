@@ -1,22 +1,22 @@
-# vite-plugin-autoimport
+# sveltekit-autoimport
 
-![Build Status](https://github.com/yuanchuan/vite-plugin-autoimport/actions/workflows/ci.yml/badge.svg)
+![Build Status](https://github.com/yuanchuan/sveltekit-autoimport/actions/workflows/ci.yml/badge.svg)
 
 Automatically detect and import components/modules for <a href="https://kit.svelte.dev/">SvelteKit</a> projects.
 
 ### Before
 
-<img src="screenshots/before.png" alt="Code without vite-plugin-autoimport" />
+<img src="screenshots/before.png" alt="Code without sveltekit-autoimport" />
 
 ### After
 
-<img src="screenshots/after.png" alt="Code with vite-plugin-autoimport"/>
+<img src="screenshots/after.png" alt="Code with sveltekit-autoimport"/>
 
 
 ## Installation
 
 ```bash
-npm i -D vite-plugin-autoimport
+npm i -D sveltekit-autoimport
 ```
 
 ## Basic configuration
@@ -24,7 +24,7 @@ npm i -D vite-plugin-autoimport
 ```js
 // svelte.config.js
 
-import autoImport from 'vite-plugin-autoimport';
+import autoImport from 'sveltekit-autoimport';
 
 export default {
   kit: {
@@ -42,7 +42,7 @@ export default {
 It can be used as a preprocessor to transform code before other modules like `mdsvex`.
 
 ```js
-import autoImport from 'vite-plugin-autoimport';
+import autoImport from 'sveltekit-autoimport';
 import { mdsvex } from 'mdsvex';
 
 export default {
@@ -121,7 +121,7 @@ So that
 
 ```js
 // svelte.config.js
-import autoImport from 'vite-plugin-autoimport';
+import autoImport from 'sveltekit-autoimport';
 
 export default {
   kit: {

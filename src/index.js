@@ -71,7 +71,7 @@ export default function autoImport({ components, module, mapping, include, exclu
   updateMapping();
 
   return {
-    name: 'vite-plugin-autoimport',
+    name: 'sveltekit-autoimport',
 
     enforce: 'pre',
 
@@ -79,7 +79,7 @@ export default function autoImport({ components, module, mapping, include, exclu
     async configResolved(config) {
       let { plugins } = config;
       let indexPluginSvelte = plugins.findIndex(n => n.name === 'vite-plugin-svelte');
-      let indexAutoImport = plugins.findIndex(n => n.name === 'vite-plugin-autoimport');
+      let indexAutoImport = plugins.findIndex(n => n.name === 'sveltekit-autoimport');
       if (indexPluginSvelte < indexAutoImport) {
         let autoImport = plugins[indexAutoImport];
         plugins.splice(indexAutoImport, 1);

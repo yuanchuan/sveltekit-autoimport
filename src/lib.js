@@ -44,7 +44,10 @@ export function createMapping({ components, module, mapping, filter }) {
   // Select methods or properties from a given module
   Object.entries(makeLiteral(module)).forEach(([moduleFrom, names]) => {
     makeArray(names).forEach(name => {
-      importMapping[name] = `import { ${name} } from '${moduleFrom}'`;
+      let importValue = `import { ${name} } from '${moduleFrom}'`;
+      let [origin, alias] = name.split(/\s+as\s+/);
+      let key = (alias === undefined) ? origin : alias;
+      importMapping[String(key).trim()] = importValue;
     });
   });
 

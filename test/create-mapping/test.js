@@ -11,9 +11,15 @@ function resolve(name) {
 let [mapping, paths] = createMapping({
   components: resolve('./components'),
   filter: createFilter(['**/*.svelte']),
+  module: {
+    svelte: ['onMount as mount', 'onDestroy']
+  }
 });
 
 test('create mapping', () => {
-  expect(Object.keys(mapping)).toEqual(['A', 'B', 'LibC'])
-  expect(paths).toEqual([resolve('./components')])
+  expect(Object.keys(mapping))
+    .toEqual(['A', 'B', 'LibC', 'mount', 'onDestroy']);
+
+  expect(paths)
+    .toEqual([resolve('./components')]);
 });

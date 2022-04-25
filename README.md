@@ -24,7 +24,7 @@ npm i -D sveltekit-autoimport
 Inside `svelte.config.js`.
 
 ```js
-/* As vite plugin (recommended) */
+/* As a vite plugin (recommended) */
 
 import autoImport from 'sveltekit-autoimport';
 

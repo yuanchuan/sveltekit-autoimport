@@ -41,7 +41,7 @@ export default {
 }
 ```
 
-```
+```js
 /* As svelte preprocessor for some special modules */
 
 import autoImport from 'sveltekit-autoimport';
@@ -99,7 +99,6 @@ autoImport({
   }
 })
 ```
-
 
 ## Name strategy
 

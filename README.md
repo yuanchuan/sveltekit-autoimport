@@ -62,8 +62,8 @@ export default {
 
 ## How it works?
 
-This tool will **NOT** add global components blindly into your files,
-instead, it searches for **undefined** components or modules,
+This tool will **NOT** add global components blindly into your files.
+Instead, it searches for **undefined** components or modules,
 and then try to fix them by auto importing.
 
 #### You need to guide it where to import the components from:

@@ -3,7 +3,6 @@
 ![Build Status](https://github.com/yuanchuan/sveltekit-autoimport/actions/workflows/ci.yml/badge.svg)
 
 Automatically detect and import components/modules for <a href="https://kit.svelte.dev/">SvelteKit</a> projects.
-(Previously vite-plugin-autoimport)
 
 ### Before
 
@@ -22,8 +21,10 @@ npm i -D sveltekit-autoimport
 
 ## Basic configuration
 
+Inside `svelte.config.js`.
+
 ```js
-// svelte.config.js
+/* As vite plugin (recommended) */
 
 import autoImport from 'sveltekit-autoimport';
 
@@ -40,23 +41,65 @@ export default {
 }
 ```
 
-It can be used as a preprocessor to transform code before other modules like `mdsvex`.
+```
+/* As svelte preprocessor for some special modules */
 
-```js
 import autoImport from 'sveltekit-autoimport';
 import { mdsvex } from 'mdsvex';
 
 export default {
+  kit: {},
   preprocess: [
     autoImport({
       components: ['./src/components'],
       include: ['**/*.(svelte|md)'],
     }),
+    /* order matters */
     mdsvex()
-  ],
-  kit: {}
+  ]
 }
 ```
+
+## How it works?
+
+This tool will **NOT** add global components blindly into your files,
+instead, it searches for **undefined** components or modules,
+and then try to fix them by auto importing.
+
+#### You need to guide it where to import the components from:
+
+```js
+autoImport({
+  components: ['./src/components']
+})
+```
+
+#### Or tell it how to import for some specific variables:
+
+```js
+autoImport({
+  mapping: {
+    API: `import API from '~/api/api.js'`,
+    MY_FUNCTION: `import MY_FUNCTION from 'lib/my-function'`
+  }
+})
+```
+
+#### Or explictly list the components being used from a third party module:
+
+```js
+autoImport({
+  module: {
+    'carbon-components-svelte': [
+      'Button',
+      'Accordion',
+      'AccordionItem',
+      'Grid as CarbonGrid', /* rename */
+    ]
+  }
+})
+```
+
 
 ## Name strategy
 
@@ -79,7 +122,7 @@ then normalized to **upper camel case** format. For example:
 
 ## Prefix
 
-All components can be prefixed with a given name.
+Components can be prefixed with a given name.
 
 ```js
 autoImport({

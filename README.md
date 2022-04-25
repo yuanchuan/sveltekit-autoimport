@@ -42,7 +42,7 @@ export default {
 ```
 
 ```js
-/* As svelte preprocessor for some special modules */
+/* Or as a svelte preprocessor for some special modules */
 
 import autoImport from 'sveltekit-autoimport';
 import { mdsvex } from 'mdsvex';

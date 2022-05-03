@@ -1,3 +1,8 @@
+## 1.6.6
+
+* Fix preprocess detection. It might not always be array. (#18)
+
+
 ## 1.6.5
 
 * Impove docs. (#15)

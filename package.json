@@ -1,6 +1,6 @@
 {
   "name": "sveltekit-autoimport",
-  "version": "1.6.5",
+  "version": "1.6.6",
   "description": "Automatically detect and import components or modules",
   "main": "src/index.js",
   "scripts": {

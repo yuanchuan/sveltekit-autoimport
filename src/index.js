@@ -106,12 +106,13 @@ export default function autoImport({ components, module, mapping, include, exclu
       }
       let ast;
       try {
-        if (preprocess && preprocess.length) {
+        if (preprocess) {
           let result = await svelte.preprocess(code, preprocess);
           code = result.code;
         }
         ast = svelte.parse(code);
       } catch (e) {
+        console.warn('Error on preprocess:', e.message);
         return null;
       }
       return transformCode(code, ast, filename);

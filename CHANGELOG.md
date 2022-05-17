@@ -1,3 +1,7 @@
+## 1.6.7
+
+* Pass `filename` to preprocess function. (#20)
+
 ## 1.6.6
 
 * Fix preprocess detection. It might not always be array. (#18)

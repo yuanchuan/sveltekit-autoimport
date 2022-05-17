@@ -107,7 +107,7 @@ export default function autoImport({ components, module, mapping, include, exclu
       let ast;
       try {
         if (preprocess) {
-          let result = await svelte.preprocess(code, preprocess);
+          let result = await svelte.preprocess(code, preprocess, { filename });
           code = result.code;
         }
         ast = svelte.parse(code);

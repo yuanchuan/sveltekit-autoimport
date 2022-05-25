@@ -33,6 +33,7 @@ export default {
     vite: {
       plugins: [
         autoImport({
+          dts: "./src/components-auto-imports.d.ts",
           components: ['./src/components'],
         })
       ]
@@ -51,6 +52,7 @@ export default {
   kit: {},
   preprocess: [
     autoImport({
+      dts: "./src/components-auto-imports.d.ts",
       components: ['./src/components'],
       include: ['**/*.(svelte|md)'],
     }),
@@ -172,6 +174,8 @@ export default {
       plugins: [
         autoImport({
 
+          // where to generate the d.ts file
+          dts: "./src/components-auto-imports.d.ts",
           // where to search for the components
           components: [
             './src/components',

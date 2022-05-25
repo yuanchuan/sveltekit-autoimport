@@ -11,8 +11,9 @@ import { createMapping, walkAST, prependTo, normalizePath, makeArray } from './l
  * @param {object} [mapping] - Set mapping manually
  * @param {string|string[]} [include]
  * @param {string|String[]} [exclude]
+ * @param {string} [dts]
  */
-export default function autoImport({ components, module, mapping, include, exclude } = {}) {
+export default function autoImport({ components, module, mapping, include, exclude, dts } = {}) {
   if (!include) {
     include = ['**/*.svelte'];
   }
@@ -30,7 +31,7 @@ export default function autoImport({ components, module, mapping, include, exclu
 
   function updateMapping() {
     [importMapping, componentPaths] =
-      createMapping({ components, module, mapping, filter });
+      createMapping({ components, module, mapping, filter, dts });
   }
 
   function transformCode(code, ast, filename) {

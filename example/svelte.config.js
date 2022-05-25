@@ -5,6 +5,7 @@ export default {
     vite: {
       plugins: [
         autoImport({
+					dts: "./src/components-auto-imports.d.ts",
           components: [
             './src/components',
 

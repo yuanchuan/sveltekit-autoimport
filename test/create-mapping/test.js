@@ -24,6 +24,8 @@ declare global {
 const A: typeof import('../test/create-mapping/components/a.svelte')['default']
 const B: typeof import('../test/create-mapping/components/b.svelte')['default']
 const LibC: typeof import('../test/create-mapping/components/lib/c.svelte')['default']
+const mount: typeof import('svelte')['onMount']
+const onDestroy: typeof import('svelte')['onDestroy']
 }
 `
 

@@ -91,7 +91,7 @@ export default function autoImport({ components, module, mapping, include, exclu
       }
       try {
         let dirname = path.dirname(fileURLToPath(import.meta.url));
-        let relative = path.relative(dirname, config.inlineConfig.root);
+        let relative = path.relative(dirname, config.inlineConfig.root || config.root);
         let configFile = path.join(relative, './svelte.config.js');
         let pkg = await import(normalizePath('./' + configFile));
         preprocess = pkg.default.preprocess || [];

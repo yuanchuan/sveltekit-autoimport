@@ -1,3 +1,7 @@
+## 1.6.8
+
+* Fix reading root path for SK >= next.347
+
 ## 1.6.7
 
 * Pass `filename` to preprocess function. (#20)

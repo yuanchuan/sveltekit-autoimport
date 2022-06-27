@@ -78,4 +78,11 @@ describe('walk ast', () => {
     expect(Array.from(declared)).toEqual(['s']);
   });
 
+  test('object component', () => {
+    let { maybeUsed } = walkAST(svelte.parse(`
+      <A.Button />
+    `));
+    expect(Array.from(maybeUsed)).toEqual(['A']);
+  });
+
 });

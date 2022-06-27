@@ -138,7 +138,7 @@ export function walkAST(ast) {
     walk(ast.html.children, {
       enter(node, parent) {
         if (node.type == 'InlineComponent' && !/^svelte:/.test(node.name)) {
-          maybeUsed.add(node.name);
+          maybeUsed.add(String(node.name).split('.')[0]);
         }
         if (node.type === 'Identifier') {
           switch (parent.type) {

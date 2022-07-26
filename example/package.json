@@ -2,13 +2,14 @@
   "name": "demo",
   "version": "0.0.1",
   "scripts": {
-    "dev": "vite dev",
+    "dev": "vite dev --port=3000",
     "build": "vite build",
     "start": "vite start"
   },
   "devDependencies": {
     "@sveltejs/kit": "1.0.0-next.394",
     "svelte": "^3.47.0",
+    "sveltekit-autoimport": "^1.6.8",
     "vite": "^3.0.3"
   },
   "type": "module"

@@ -1,5 +1,5 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import autoImport from '../src/index.js';
+import autoImport from 'sveltekit-autoimport';
 
 export default {
   plugins: [

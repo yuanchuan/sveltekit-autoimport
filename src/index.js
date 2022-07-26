@@ -5,13 +5,6 @@ import { createFilter } from '@rollup/pluginutils';
 import MagicString from 'magic-string';
 import { createMapping, walkAST, prependTo, normalizePath, makeArray } from './lib.js';
 
-/**
- * @param {string|string[]} [components] - Component paths
- * @param {object} [module] - Mapping exported method/property from modules
- * @param {object} [mapping] - Set mapping manually
- * @param {string|string[]} [include]
- * @param {string|String[]} [exclude]
- */
 export default function autoImport({ components, module, mapping, include, exclude } = {}) {
   if (!include) {
     include = ['**/*.svelte'];

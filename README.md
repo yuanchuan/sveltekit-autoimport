@@ -141,43 +141,43 @@ So that
 ## Full options
 
 ```js
-// svelte.config.js
+// vite.config.js
+
+import { sveltekit } from '@sveltejs/kit/vite';
 import autoImport from 'sveltekit-autoimport';
 
 export default {
-  kit: {
-    vite: {
-      plugins: [
-        autoImport({
+  plugins: [
+    autoImport({
 
-          // where to search for the components
-          components: [
-            './src/components',
-            './src/routes/_fragments',
-            { name: './src/lib', flat: true, prefix: 'lib' },
-          ],
+      // where to search for the components
+      components: [
+        './src/components',
+        './src/routes/_fragments',
+        { name: './src/lib', flat: true, prefix: 'lib' },
+      ],
 
-          // some frequently used modules
-          module: {
-            svelte: ['onMount', 'createEventDispatcher']
-          },
+      // some frequently used modules
+      module: {
+        svelte: ['onMount', 'createEventDispatcher']
+      },
 
-          // manually import
-          mapping: {
-            API:  `import API from '~/src/api'`,
-            Icon: `import * as Icon from '$components/icon'`,
-          },
+      // manually import
+      mapping: {
+        API:  `import API from '~/src/api'`,
+        Icon: `import * as Icon from '$components/icon'`,
+      },
 
-          // autoimport only for .svelte files
-          // and only search for .svelte files inside components
-          include: ['**/*.svelte'],
+      // autoimport only for .svelte files
+      // and only search for .svelte files inside components
+      include: ['**/*.svelte'],
 
-          // node_modules is ignored by default
-          exclude: ['**/node_modules/**'],
+      // node_modules is ignored by default
+      exclude: ['**/node_modules/**'],
 
-        })
-      ]
-    }
-  }
+    }),
+
+    sveltekit()
+  ]
 }
 ```

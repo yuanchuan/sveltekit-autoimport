@@ -1,3 +1,8 @@
+## 1.6.9
+
+* Update docs and example.
+* Remove jsDoc comments.
+
 ## 1.6.8
 
 * Fix reading root path for SK >= next.347

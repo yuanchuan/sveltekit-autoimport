@@ -21,41 +21,19 @@ npm i -D sveltekit-autoimport
 
 ## Basic configuration
 
-Inside `svelte.config.js`.
+Inside `vite.config.js`.
 
 ```js
-/* As a vite plugin (recommended) */
-
+import { sveltekit } from '@sveltejs/kit/vite';
 import autoImport from 'sveltekit-autoimport';
 
 export default {
-  kit: {
-    vite: {
-      plugins: [
-        autoImport({
-          components: ['./src/components'],
-        })
-      ]
-    }
-  }
-}
-```
-
-```js
-/* Or as a svelte preprocessor for some special modules */
-
-import autoImport from 'sveltekit-autoimport';
-import { mdsvex } from 'mdsvex';
-
-export default {
-  kit: {},
-  preprocess: [
+  plugins: [
     autoImport({
       components: ['./src/components'],
-      include: ['**/*.(svelte|md)'],
     }),
-    /* order matters */
-    mdsvex()
+    // must be placed before sveltekit()
+    sveltekit()
   ]
 }
 ```

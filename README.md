@@ -43,7 +43,7 @@ npm i -D sveltekit-autowire
 Then, add it to your `vite.config.js`. Make sure to add it _before_ the `sveltekit` plugin.
 
 ```javascript
-import { sveltekit } from '@sveltejs/kit'
+import { sveltekit } from '@sveltejs/kit/vite'
 import { autowire } from 'sveltekit-autowire'
 
 const config = {

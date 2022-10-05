@@ -34,4 +34,4 @@ You can address this, by adding `"missing-declaration" : "ignore"` to the `svelt
 
 
 ## What about `sveltekit-autoimport`?
-This plugin is actually a fork of the excellent [sveltekit-autoimport](https://github.com/yuanchuan/sveltekit-autoimport). I felt the need to start a fork, so that I could change the default configuration/import resolion, add typescript support and add intellisense support. These seemed like quite intrusive changes to someone else's project, so a fork it is.
+This plugin is actually a fork of the excellent [sveltekit-autoimport](https://github.com/yuanchuan/sveltekit-autoimport). I wanted to change the default configuration/import resolution, add typescript support and add intellisense support. These seemed like quite intrusive changes to someone else's project, so a fork it is.

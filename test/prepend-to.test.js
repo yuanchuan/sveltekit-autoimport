@@ -1,4 +1,6 @@
 import { prependTo } from '../src/lib.js';
+import {describe, expect, test} from 'vitest'
+
 
 describe('prependTo', () => {
 

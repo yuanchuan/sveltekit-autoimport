@@ -1,4 +1,5 @@
 import { camelize } from '../src/lib.js';
+import {expect, test} from 'vitest'
 
 function compare(a, b) {
   expect(camelize(a)).toEqual(b);

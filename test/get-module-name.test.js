@@ -1,4 +1,6 @@
 import { getModuleName } from '../src/lib.js';
+import {describe, expect, test} from 'vitest'
+
 
 describe('get module name', () => {
 

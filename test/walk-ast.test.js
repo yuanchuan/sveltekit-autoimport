@@ -1,5 +1,7 @@
 import * as svelte from 'svelte/compiler';
 import { walkAST } from '../src/lib.js';
+import {describe, expect, test} from 'vitest'
+
 
 describe('walk ast', () => {
 

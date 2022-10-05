@@ -181,3 +181,6 @@ export default {
   ]
 }
 ```
+
+## About
+This is a fork of [yuanchuan](https://github.com/yuanchuan)'s original [sveltekit-autoimport](https://github.com/yuanchuan/sveltekit-autoimport).

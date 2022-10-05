@@ -1,5 +1,6 @@
 import path from 'path';
 import { getLastDir } from '../src/lib.js';
+import {expect, test} from 'vitest'
 
 function join(...args) {
   return args.join(path.sep);

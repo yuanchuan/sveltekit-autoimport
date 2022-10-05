@@ -2,6 +2,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createFilter } from '@rollup/pluginutils';
 import { createMapping } from '../../src/lib.js';
+import {expect, test} from 'vitest'
+
 
 function resolve(name) {
   let __dirname = path.dirname(fileURLToPath(import.meta.url));

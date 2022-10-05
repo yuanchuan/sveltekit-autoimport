@@ -13,7 +13,7 @@ Despite it's "write less, do more" approach to design, sveltekit actually featur
 
 **Before**
 
-```html
+```jsx
 <script lang="ts">
   import MyInput from "$lib/ui/inputs/MyInput.svelte";
   import type { FormData } from "./$types";
@@ -21,13 +21,13 @@ Despite it's "write less, do more" approach to design, sveltekit actually featur
   export let form: FormData;
 </script>
 
-<MyInput text="Hello World" showHelpertext="{form.missingValue}" />
+<MyInput text="Hello World" showHelpertext={form?.missingValue} />
 ```
 
 **After**
 
-```html
-<MyInput text="Hello World" showHelpertext="{form.missingValue}" />
+```jsx
+<MyInput text="Hello World" showHelpertext={form?.missingValue} />
 ```
 
 ## Installation

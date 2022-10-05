@@ -49,7 +49,7 @@ import { autowire } from 'sveltekit-autowire'
 const config = {
 	plugins: [autowire(), sveltekit()]
 };
-export const config
+export default config;
 ```
 
 ### VsCode setup

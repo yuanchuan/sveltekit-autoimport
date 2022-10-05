@@ -1,0 +1,33 @@
+{
+  "name": "@dijkstra/sveltekit-autoimport",
+  "version": "1.6.9",
+  "description": "Automatically import svelte components",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LorisSigrist/sveltekit-autoimport.git"
+  },
+  "keywords": [
+    "vite",
+    "sveltekit"
+  ],
+  "author": "yuanchuan, LorisSigrist",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LorisSigrist/sveltekit-autoimport/issues"
+  },
+  "type": "module",
+  "homepage": "https://github.com/LorisSigrist/sveltekit-autoimport#readme",
+  "dependencies": {
+    "@rollup/pluginutils": "^4.1.0",
+    "estree-walker": "^2.0.2",
+    "magic-string": "^0.26.1",
+    "svelte": "^3.47.0"
+  },
+  "devDependencies": {
+    "vitest": "^0.23.4"
+  }
+}

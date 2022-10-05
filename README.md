@@ -1,186 +1,37 @@
-# sveltekit-autoimport
+# Sveltekit Autoimport
 
-![Build Status](https://github.com/yuanchuan/sveltekit-autoimport/actions/workflows/ci.yml/badge.svg)
+Did you ever have a Svelte component with a massive wall of imports at the start? This plugin solves that, by automatically detecting which Components you use, and adding imports for them.
 
-Automatically detect and import components/modules for <a href="https://kit.svelte.dev/">SvelteKit</a> projects.
+**Before**
+```html
+<script lang="ts">
+  import MyButton from '$lib/ui/inputs/MyButton.svelte'
+</script>
 
-### Before
+<MyButton text="Hello World"/>
+```
 
-<img src="screenshots/before.png" alt="Code without sveltekit-autoimport" />
+**After**
+```html
+<MyButton text="Hello World"/>
+```
 
-### After
-
-<img src="screenshots/after.png" alt="Code with sveltekit-autoimport"/>
-
+## Features
+- 🔎 Automatically import components
+- ☑️ Typescript support
+- 🧠 Intellisense
+- 📦 Zero-config defaults for SvelteKit out of the box.
 
 ## Installation
+### Via Npm
+This is not yet ready to be installed
 
-```bash
-npm i -D sveltekit-autoimport
-```
+### VsCode setup
 
-## Basic configuration
+Sadly, it does not seem to be possible to tell the svelte language tools about the auto-imported components. This means that by default you will get squiggly lines under Components that are auto-imported. 
 
-Inside `vite.config.js`.
+You can address this, by adding `"missing-declaration" : "ignore"` to the `svelte.plugin.svelte.compilerWarnings` setting. This is an imperfect solution, as it will also ignore errors when Components really aren't defined anywhere, but this is the best we can do at the moment
 
-```js
-import { sveltekit } from '@sveltejs/kit/vite';
-import autoImport from 'sveltekit-autoimport';
 
-export default {
-  plugins: [
-    autoImport({
-      components: ['./src/components'],
-    }),
-    // must be placed before sveltekit()
-    sveltekit()
-  ]
-}
-```
-
-## How it works?
-
-This tool will **NOT** add global components blindly into your files.
-Instead, it searches for **undefined** components or modules,
-and then try to fix them by auto importing.
-
-#### You need to guide it where to import the components from:
-
-```js
-autoImport({
-  components: ['./src/components']
-})
-```
-
-#### Or tell it how to import for some specific variables:
-
-```js
-autoImport({
-  mapping: {
-    API: `import API from '~/api/api.js'`,
-    MY_FUNCTION: `import MY_FUNCTION from 'lib/my-function'`
-  }
-})
-```
-
-#### Or explictly list the components being used from a third party module:
-
-```js
-autoImport({
-  module: {
-    'carbon-components-svelte': [
-      'Button',
-      'Accordion',
-      'AccordionItem',
-      'Grid as CarbonGrid', /* rename */
-    ]
-  }
-})
-```
-
-## Name strategy
-
-By default the component names will be **namespaced** with their directory names and
-then normalized to **upper camel case** format. For example:
-
-```html
-<MyComponent />
-<!-- my-component.svelte -->
-
-<MyAnotherComponent />
-<!-- my_another_component.svelte -->
-
-<FormInput />
-<!-- form/input.svelte -->
-
-<Modal />
-<!-- modal/index.svelte -->
-```
-
-## Prefix
-
-Components can be prefixed with a given name.
-
-```js
-autoImport({
-  components: [{ name: './src/components', prefix: 'shared' } ],
-})
-```
-
-So that
-
-```html
-<SharedComponent />
-<!-- component.svelte -->
-
-<SharedFormInput />
-<!-- form/input.svelte -->
-```
-
-## Flat
-
-If the `flat` option is set to be true, no namespace will be added.
-
-```js
-autoImport({
-  components: [{ name: './src/components', flat: true } ],
-})
-```
-
-So that
-
-```html
-<Input />
-<!-- form/input.svelte -->
-
-<Popup />
-<!-- modal/inline/popup.svelte -->
-
-```
-
-## Full options
-
-```js
-// vite.config.js
-
-import { sveltekit } from '@sveltejs/kit/vite';
-import autoImport from 'sveltekit-autoimport';
-
-export default {
-  plugins: [
-    autoImport({
-
-      // where to search for the components
-      components: [
-        './src/components',
-        './src/routes/_fragments',
-        { name: './src/lib', flat: true, prefix: 'lib' },
-      ],
-
-      // some frequently used modules
-      module: {
-        svelte: ['onMount', 'createEventDispatcher']
-      },
-
-      // manually import
-      mapping: {
-        API:  `import API from '~/src/api'`,
-        Icon: `import * as Icon from '$components/icon'`,
-      },
-
-      // autoimport only for .svelte files
-      // and only search for .svelte files inside components
-      include: ['**/*.svelte'],
-
-      // node_modules is ignored by default
-      exclude: ['**/node_modules/**'],
-
-    }),
-
-    sveltekit()
-  ]
-}
-```
-
-## About
-This is a fork of [yuanchuan](https://github.com/yuanchuan)'s original [sveltekit-autoimport](https://github.com/yuanchuan/sveltekit-autoimport).
+## What about `sveltekit-autoimport`?
+This plugin is actually a fork of the excellent [sveltekit-autoimport](https://github.com/yuanchuan/sveltekit-autoimport). I felt the need to start a fork, so that I could change the default configuration/import resolion, add typescript support and add intellisense support. These seemed like quite intrusive changes to someone else's project, so a fork it is.

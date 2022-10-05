@@ -1,1 +1,1 @@
-<MyButton/>
+<MyButton text="Hello World"/>

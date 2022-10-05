@@ -4,8 +4,18 @@ import * as svelte from 'svelte/compiler';
 import { createFilter } from '@rollup/pluginutils';
 import MagicString from 'magic-string';
 import { createMapping, walkAST, prependTo, normalizePath, makeArray } from './lib.js';
+import type {Plugin} from 'vite'
 
-export default function autoImport({ components, module, mapping, include, exclude } = {}) {
+interface PluginOptions {
+  components?: string[],
+  mapping?: Record<string, string>,
+  module?: Record<string, string[]>,
+  include?: string[],
+  exclude? : string[]
+}
+
+
+export default function autoImport({ components, module, mapping, include, exclude } : PluginOptions= {}) : Plugin {
   if (!include) {
     include = ['**/*.svelte'];
   }
@@ -74,13 +84,7 @@ export default function autoImport({ components, module, mapping, include, exclu
       let indexPluginSvelte = plugins.findIndex(n => n.name === 'vite-plugin-svelte');
       let indexAutoImport = plugins.findIndex(n => n.name === 'sveltekit-autoimport');
       if (indexPluginSvelte < indexAutoImport) {
-        let autoImport = plugins[indexAutoImport];
-        plugins.splice(indexAutoImport, 1);
-        config.plugins = [
-          ...plugins.slice(0, indexPluginSvelte),
-          autoImport,
-          ...plugins.slice(indexPluginSvelte + 1)
-        ];
+        throw Error("The AutoImport plugin must come before SvelteKit plugin in your vite config")
       }
       try {
         let dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -108,7 +112,9 @@ export default function autoImport({ components, module, mapping, include, exclu
         console.warn('Error on preprocess:', e.message);
         return null;
       }
-      return transformCode(code, ast, filename);
+      const newCode =  transformCode(code, ast, filename);
+      console.log(newCode)
+      return newCode;
     },
 
     configureServer(server) {
@@ -118,21 +124,6 @@ export default function autoImport({ components, module, mapping, include, exclu
           .on('add', updateMapping)
           .on('unlink', updateMapping);
       }
-    },
-
-    // As svelte preprocessor
-    markup({ content, filename }) {
-      if (!filter(filename)) {
-        return null;
-      }
-      let ast;
-      try {
-        ast = svelte.parse(content);
-      } catch (e) {
-        return null;
-      }
-      return transformCode(content, ast, filename);
     }
-
   }
 }

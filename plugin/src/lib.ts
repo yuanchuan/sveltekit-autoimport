@@ -2,9 +2,9 @@ import { existsSync, statSync, readdirSync } from 'fs';
 import path from 'path';
 import { walk } from 'estree-walker';
 
-export function createMapping({ components, module, mapping, filter }) {
+export function createMapping({ components, module, mapping, filter }) : [{}, any[]] {
   const importMapping = {};
-  const componentPaths = [];
+  const componentPaths : any[] = [];
 
   // Read all components from given paths
   // and transform the import names into CamelCase

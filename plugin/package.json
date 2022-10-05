@@ -2,8 +2,9 @@
   "name": "@dijkstra/sveltekit-autoimport",
   "version": "1.6.9",
   "description": "Automatically import svelte components",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
+    "build": "tsc",
     "test": "vitest run"
   },
   "repository": {
@@ -28,6 +29,10 @@
     "svelte": "^3.47.0"
   },
   "devDependencies": {
+    "typescript": "^4.8.4",
     "vitest": "^0.23.4"
+  },
+  "peerDependencies": {
+    "vite" : "*"
   }
 }

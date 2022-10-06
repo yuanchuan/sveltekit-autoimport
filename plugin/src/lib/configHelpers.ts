@@ -20,7 +20,6 @@ export function enforcePluginOrdering(plugins: readonly Plugin[]) {
 
 /**
  * Returns the preprocessor defined in the user's `svelte.config.js` file, if it exists
- * If the preprocessor can't be resolved, return and empty array
  * @param config - The config obtained from configResolved 
  */
 export async function resolveSveltePreprocessor(config: Config): Promise<PreprocessorGroup | undefined> {

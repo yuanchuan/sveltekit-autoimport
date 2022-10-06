@@ -1,9 +1,9 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import type { UserConfig } from 'vite';
-import autoimport from '@dijkstra/sveltekit-autoimport'
+import autowire from 'sveltekit-autowire'
 
 const config: UserConfig = {
-	plugins: [autoimport({
+	plugins: [autowire({
 		components:  [{ name: './src/lib', flat: true } ],
 	}), sveltekit()]
 };

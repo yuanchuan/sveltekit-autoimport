@@ -1,5 +1,5 @@
 {
-  "name": "@dijkstra/sveltekit-autoimport",
+  "name": "sveltekit-autowire",
   "version": "1.6.9",
   "description": "Automatically import svelte components",
   "main": "dist/index.js",

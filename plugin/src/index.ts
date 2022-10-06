@@ -5,6 +5,7 @@ import { createFilter } from '@rollup/pluginutils';
 import MagicString from 'magic-string';
 import { createMapping, walkAST, prependTo, normalizePath, makeArray } from './lib.js';
 import type {Plugin} from 'vite'
+import { enforcePluginOrdering } from './lib/configHelpers.js';
 
 interface PluginOptions {
   components?: string[],
@@ -74,18 +75,15 @@ export default function autoImport({ components, module, mapping, include, exclu
   updateMapping();
 
   return {
-    name: 'sveltekit-autoimport',
+    name: 'sveltekit-autowire',
 
     enforce: 'pre',
 
     // Must be processed before vite-plugin-svelte
     async configResolved(config) {
-      let { plugins } = config;
-      let indexPluginSvelte = plugins.findIndex(n => n.name === 'vite-plugin-svelte');
-      let indexAutoImport = plugins.findIndex(n => n.name === 'sveltekit-autoimport');
-      if (indexPluginSvelte < indexAutoImport) {
-        throw Error("The AutoImport plugin must come before SvelteKit plugin in your vite config")
-      }
+
+      enforcePluginOrdering(config.plugins);
+      
       try {
         let dirname = path.dirname(fileURLToPath(import.meta.url));
         let relative = path.relative(dirname, config.inlineConfig.root || config.root);
@@ -95,6 +93,7 @@ export default function autoImport({ components, module, mapping, include, exclu
       } catch(e) {
         console.warn('Error reading svelte.config.js');
       }
+
     },
 
     async transform(code, filename) {
@@ -113,7 +112,6 @@ export default function autoImport({ components, module, mapping, include, exclu
         return null;
       }
       const newCode =  transformCode(code, ast, filename);
-      console.log(newCode)
       return newCode;
     },
 

@@ -1,11 +1,11 @@
 import path from 'path';
-import { fileURLToPath } from 'url';
 import * as svelte from 'svelte/compiler';
 import { createFilter } from '@rollup/pluginutils';
 import MagicString from 'magic-string';
-import { createMapping, walkAST, prependTo, normalizePath, makeArray } from './lib.js';
+import { createMapping, walkAST, prependTo, makeArray } from './lib.js';
 import type {Plugin} from 'vite'
-import { enforcePluginOrdering } from './lib/configHelpers.js';
+import { enforcePluginOrdering, resolveSveltePreprocessor } from './lib/configHelpers.js';
+import { Ast, PreprocessorGroup } from './types.js';
 
 interface PluginOptions {
   components?: string[],
@@ -30,7 +30,7 @@ export default function autoImport({ components, module, mapping, include, exclu
 
   let importMapping = {};
   let componentPaths = [];
-  let preprocess = [];
+  let preprocess : PreprocessorGroup;
 
   function updateMapping() {
     [importMapping, componentPaths] =
@@ -39,6 +39,7 @@ export default function autoImport({ components, module, mapping, include, exclu
 
   function transformCode(code, ast, filename) {
     const { imported, maybeUsed, declared } = walkAST(ast);
+    console.log(imported, maybeUsed, declared);
     const imports = [];
     Object.entries(importMapping).forEach(([name, value]) => {
       if (/\W/.test(name)) {
@@ -81,26 +82,15 @@ export default function autoImport({ components, module, mapping, include, exclu
 
     // Must be processed before vite-plugin-svelte
     async configResolved(config) {
-
       enforcePluginOrdering(config.plugins);
-      
-      try {
-        let dirname = path.dirname(fileURLToPath(import.meta.url));
-        let relative = path.relative(dirname, config.inlineConfig.root || config.root);
-        let configFile = path.join(relative, './svelte.config.js');
-        let pkg = await import(normalizePath('./' + configFile));
-        preprocess = pkg.default.preprocess || [];
-      } catch(e) {
-        console.warn('Error reading svelte.config.js');
-      }
-
+      preprocess = await resolveSveltePreprocessor(config);
     },
 
     async transform(code, filename) {
       if (!filter(filename)) {
         return null;
       }
-      let ast;
+      let ast : Ast;
       try {
         if (preprocess) {
           let result = await svelte.preprocess(code, preprocess, { filename });

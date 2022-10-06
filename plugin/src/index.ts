@@ -1,22 +1,22 @@
 import path from 'path';
-import * as svelte from 'svelte/compiler';
 import { createFilter } from '@rollup/pluginutils';
 import MagicString from 'magic-string';
 import { createMapping, walkAST, prependTo, makeArray } from './lib.js';
-import type {Plugin} from 'vite'
+import type { Plugin } from 'vite'
 import { enforcePluginOrdering, resolveSveltePreprocessor } from './lib/configHelpers.js';
 import { Ast, PreprocessorGroup } from './types.js';
+import { genrateAST } from './lib/transformHelpers.js';
 
 interface PluginOptions {
   components?: string[],
   mapping?: Record<string, string>,
   module?: Record<string, string[]>,
   include?: string[],
-  exclude? : string[]
+  exclude?: string[]
 }
 
 
-export default function autoImport({ components, module, mapping, include, exclude } : PluginOptions= {}) : Plugin {
+export default function autowire({ components, module, mapping, include, exclude }: PluginOptions = {}): Plugin {
   if (!include) {
     include = ['**/*.svelte'];
   }
@@ -30,16 +30,15 @@ export default function autoImport({ components, module, mapping, include, exclu
 
   let importMapping = {};
   let componentPaths = [];
-  let preprocess : PreprocessorGroup;
+  let sveltePreprocessor: PreprocessorGroup | undefined;
 
   function updateMapping() {
     [importMapping, componentPaths] =
       createMapping({ components, module, mapping, filter });
   }
 
-  function transformCode(code, ast, filename) {
+  function transformCode(code: string, ast: Ast | undefined, filename: string) {
     const { imported, maybeUsed, declared } = walkAST(ast);
-    console.log(imported, maybeUsed, declared);
     const imports = [];
     Object.entries(importMapping).forEach(([name, value]) => {
       if (/\W/.test(name)) {
@@ -63,7 +62,7 @@ export default function autoImport({ components, module, mapping, include, exclu
       if (ast.instance) {
         code = prependTo(code, value, ast.instance.start);
       } else {
-        code += `\n<script>${ value }</script>`;
+        code += `\n<script>${value}</script>`;
       }
     }
     let s = new MagicString(code, { filename });
@@ -83,26 +82,13 @@ export default function autoImport({ components, module, mapping, include, exclu
     // Must be processed before vite-plugin-svelte
     async configResolved(config) {
       enforcePluginOrdering(config.plugins);
-      preprocess = await resolveSveltePreprocessor(config);
+      sveltePreprocessor = await resolveSveltePreprocessor(config);
     },
 
     async transform(code, filename) {
-      if (!filter(filename)) {
-        return null;
-      }
-      let ast : Ast;
-      try {
-        if (preprocess) {
-          let result = await svelte.preprocess(code, preprocess, { filename });
-          code = result.code;
-        }
-        ast = svelte.parse(code);
-      } catch (e) {
-        console.warn('Error on preprocess:', e.message);
-        return null;
-      }
-      const newCode =  transformCode(code, ast, filename);
-      return newCode;
+      if (!filter(filename)) return;
+      const ast = await genrateAST(code, sveltePreprocessor, filename)
+      return transformCode(code, ast, filename);
     },
 
     configureServer(server) {

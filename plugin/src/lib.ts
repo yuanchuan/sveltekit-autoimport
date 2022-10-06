@@ -1,10 +1,11 @@
 import { existsSync, statSync, readdirSync } from 'fs';
 import path from 'path';
 import { walk } from 'estree-walker';
+import { Ast } from './types.js';
 
-export function createMapping({ components, module, mapping, filter }) : [{}, any[]] {
+export function createMapping({ components, module, mapping, filter }): [{}, any[]] {
   const importMapping = {};
-  const componentPaths : any[] = [];
+  const componentPaths: any[] = [];
 
   // Read all components from given paths
   // and transform the import names into CamelCase
@@ -68,7 +69,7 @@ export function createMapping({ components, module, mapping, filter }) : [{}, an
   ];
 }
 
-export function walkAST(ast) {
+export function walkAST(ast: Ast | undefined) {
   const imported = new Set();
   const maybeUsed = new Set();
   const declared = new Set();

@@ -1,7 +1,7 @@
 import { normalizePath, Plugin } from 'vite'
 import path from 'path'
 import { fileURLToPath } from 'url';
-import { Config, PreprocessorGroup } from '../types.js';
+import { Config, Preprocessor } from '../types.js';
 
 /**
  * Enforces the order in which the plugins are definesd in the user's vite.config.js file
@@ -22,7 +22,7 @@ export function enforcePluginOrdering(plugins: readonly Plugin[]) {
  * Returns the preprocessor defined in the user's `svelte.config.js` file, if it exists
  * @param config - The config obtained from configResolved 
  */
-export async function resolveSveltePreprocessor(config: Config): Promise<PreprocessorGroup | undefined> {
+export async function resolveSveltePreprocessor(config: Config): Promise<Preprocessor | undefined> {
   try {
     let dirname = path.dirname(fileURLToPath(import.meta.url));
     let relative = path.relative(dirname, config.inlineConfig.root || config.root);

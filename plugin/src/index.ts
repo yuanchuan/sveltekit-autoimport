@@ -4,7 +4,7 @@ import MagicString from 'magic-string';
 import { createMapping, walkAST, prependTo, makeArray } from './lib.js';
 import type { Plugin } from 'vite'
 import { enforcePluginOrdering, resolveSveltePreprocessor } from './lib/configHelpers.js';
-import { Ast, PreprocessorGroup } from './types.js';
+import { Ast, Preprocessor } from './types.js';
 import { genrateAST } from './lib/transformHelpers.js';
 
 interface PluginOptions {
@@ -30,7 +30,7 @@ export default function autowire({ components, module, mapping, include, exclude
 
   let importMapping = {};
   let componentPaths = [];
-  let sveltePreprocessor: PreprocessorGroup | undefined;
+  let sveltePreprocessor: Preprocessor | undefined;
 
   function updateMapping() {
     [importMapping, componentPaths] =

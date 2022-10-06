@@ -1,4 +1,4 @@
-import { Ast, PreprocessorGroup } from "../types.js";
+import { Ast, Preprocessor } from "../types.js";
 import { preprocess, parse } from 'svelte/compiler'
 
 /**
@@ -9,7 +9,7 @@ import { preprocess, parse } from 'svelte/compiler'
  * @param filename The name of the current *.svelte* file
  * @returns The AST. If parsing fails: undefined
  */
-export async function genrateAST(code: string, sveltePreprocessor: PreprocessorGroup | undefined, filename: string): Promise<Ast | undefined> {
+export async function genrateAST(code: string, sveltePreprocessor: Preprocessor | undefined, filename: string): Promise<Ast | undefined> {
     let ast = undefined;
     try {
         if (sveltePreprocessor) {

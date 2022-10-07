@@ -1,9 +1,9 @@
 import { prependTo, walkAST } from "../lib.js";
 import MagicString from 'magic-string';
 import path from 'path';
-import { Ast } from "../types.js";
+import { Ast, ImportMapping } from "../types.js";
 
-export function transformCode(code: string, ast: Ast | undefined, filename: string, importMapping: Record<string, Function>) {
+export function transformCode(code: string, ast: Ast | undefined, filename: string, importMapping: ImportMapping) {
     const { imported, maybeUsed, declared } = walkAST(ast);
     const imports = [];
     Object.entries(importMapping).forEach(([name, value]) => {

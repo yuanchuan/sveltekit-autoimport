@@ -3,7 +3,7 @@ import { createFilter } from '@rollup/pluginutils';
 import { createMapping, makeArray } from './lib.js';
 import type { Plugin } from 'vite'
 import { enforcePluginOrdering, resolveSveltePreprocessor } from './lib/configHelpers.js';
-import { Preprocessor } from './types.js';
+import { ImportMapping, Preprocessor } from './types.js';
 import { genrateAST } from './lib/transformHelpers.js';
 import { transformCode } from './lib/transformCode.js';
 
@@ -28,7 +28,7 @@ export default function autowire({ components, module, mapping, include, exclude
     '**/.svelte/**'
   ]);
 
-  let importMapping = {};
+  let importMapping : ImportMapping= {};
   let componentPaths = [];
   let sveltePreprocessor: Preprocessor | undefined;
 

@@ -1,16 +1,16 @@
 import path from 'path';
 import { walk } from 'estree-walker';
-import { Ast } from './types.js';
+import { Ast, ImportMapping } from './types.js';
 import { getModuleName } from './lib/moduleResolution/moduleNaming.js';
 import { traverse } from './lib/moduleResolution/fsTraversal.js';
 
 /**
  * Finds all the .svelte files that could be autoimported based on the configuration
  */
-export function createMapping({ components, module, mapping, filter }): [{}, any[]] {
+export function createMapping({ components, module, mapping, filter }): [ImportMapping, any[]] {
 
   /* Map Module names to import statements */
-  const importMapping : Record<string, ((target:string)=>string) | string> = {};
+  const importMapping : ImportMapping = {};
 
   /* Base paths to start looking for svelte components. These may be used by the vite filesystem watcher */
   const componentPaths: any[] = [];

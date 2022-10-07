@@ -1,14 +1,18 @@
-import { existsSync, statSync, readdirSync } from 'fs';
 import path from 'path';
 import { walk } from 'estree-walker';
 import { Ast } from './types.js';
+import { getModuleName } from './lib/moduleResolution/moduleNaming.js';
+import { traverse } from './lib/moduleResolution/fsTraversal.js';
 
 /**
  * Finds all the .svelte files that could be autoimported based on the configuration
  */
 export function createMapping({ components, module, mapping, filter }): [{}, any[]] {
 
-  const importMapping = {};
+  /* Map Module names to import statements */
+  const importMapping : Record<string, ((target:string)=>string) | string> = {};
+
+  /* Base paths to start looking for svelte components. These may be used by the vite filesystem watcher */
   const componentPaths: any[] = [];
 
   // Read all components from given paths
@@ -32,11 +36,17 @@ export function createMapping({ components, module, mapping, filter }): [{}, any
       return false;
     }
     let componentPath = path.resolve(String(thisComp));
+    console.log(componentPath);
     componentPaths.push(componentPath);
 
+    /*
+      This looks through the filesystem to find all .svelte files that could be imported,
+      resolves the Names by which they are imported, 
+      and returns functions, which generate the necessary import statements to import the components,
+      relative to any modules they might be imported from.
+    */
     traverse(componentPath, filter, filename => {
       let moduleName = getModuleName(componentPath, filename, flat, prefix);
-      console.log(moduleName);
       importMapping[moduleName] = target => {
         let moduleFrom = normalizePath(path.relative(target, filename));
         if (!moduleFrom.startsWith('.')) {
@@ -177,11 +187,6 @@ export function prependTo(code, injection, start) {
   return head + '\n' + injection + '\n' + tail;
 }
 
-export function camelize(name) {
-  return name
-    .replace(/[-_\/\\]+(.{1})/g, toUpperCase)
-    .replace(/^(.{1})/, toUpperCase);
-}
 
 export function getLastDir(dir) {
   let dirs = dir.split(path.sep).filter(n => n !== 'index');
@@ -190,69 +195,6 @@ export function getLastDir(dir) {
 
 export function normalizePath(name) {
   return name.replace(/\\/g, '/');
-}
-
-/**
- * Resolves the name under which a given Module should be made available, based on the flat, prfix and position relative to root.
- * @param rootPath - The root directory from which names should be resolved
- * @param modulePath - The path to the module file, for which a name is needed
- * @param flat - Only consider the filename. Position does not matter
- * @param prefix - A string with which the module name should be prefixed
- * @returns - A module name for the given path, standardized to CamelCase
- */
-export function getModuleName(rootPath: string, modulePath: string, flat: boolean, prefix: string) {
-  let moduleName: string;
-  if (flat) {
-    let parsed = path.parse(modulePath);
-    if (parsed.name === 'index') {
-      moduleName = camelize(getLastDir(parsed.dir)); //Use the name of the directory, if the module is called "index"
-    } else {
-      moduleName = camelize(parsed.name);
-    }
-  } else {
-    let parsed = (rootPath === modulePath)
-      ? path.parse(path.parse(modulePath).base)
-      : path.parse(path.relative(rootPath, modulePath));
-    moduleName = camelize(parsed.dir + '_' + parsed.name);
-    if (parsed.name === 'index') {
-      moduleName = camelize(parsed.dir);
-    }
-  }
-  if (prefix) {
-    moduleName = camelize(prefix) + moduleName;
-  }
-  return moduleName;
-}
-
-/**
- * Recursively walkt through the filesystem from the given root path, and call the callback on all files that match the given filter function
- * @param root - The filesystem path from which to start
- * @param filter - A function to determine if a file should be included or not
- * @param callback - The callback to be called with all files that match the filter
- * @returns 
- */
-export function traverse(root: string, filter: (arg0: string) => boolean, callback: (filename: string) => any): false | string {
-  if (!existsSync(root)) {
-    return false; //The given root path does not exist
-  }
-
-  if (statSync(root).isFile()) {
-    return root; // The root path is the component
-  }
-  if (!statSync(root).isDirectory()) {
-    return false; //The root is not a directory and can't be traversed any further
-  }
-
-  //Recursively call traverse, and call the callback on all files that match the filter
-  for (let dir of readdirSync(root)) {
-    dir = path.join(root, dir);
-    let stat = statSync(dir);
-    if (stat.isDirectory()) {
-      traverse(dir, filter, callback);
-    } else if (stat.isFile() && filter(dir)) {
-      callback(dir);
-    }
-  }
 }
 
 export function makeArray(arr) {
@@ -270,8 +212,4 @@ function makeLiteral(obj) {
     return obj;
   }
   return {};
-}
-
-function toUpperCase(_, c) {
-  return String(c).toUpperCase();
 }

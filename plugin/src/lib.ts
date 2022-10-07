@@ -180,14 +180,6 @@ export function walkAST(ast: Ast | undefined) {
   return { imported, maybeUsed, declared }
 }
 
-export function prependTo(code, injection, start) {
-  let index = start + (code.slice(start).indexOf('>') + 1);
-  let head = code.slice(0, index);
-  let tail = code.slice(index);
-  return head + '\n' + injection + '\n' + tail;
-}
-
-
 export function getLastDir(dir) {
   let dirs = dir.split(path.sep).filter(n => n !== 'index');
   return dirs[dirs.length - 1];

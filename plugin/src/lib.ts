@@ -10,7 +10,7 @@ import { traverse } from './lib/moduleResolution/fsTraversal.js';
 export function createMapping({ components, module, mapping, filter }): [ImportMapping, any[]] {
 
   /* Map Module names to import statements */
-  const importMapping : ImportMapping = {};
+  const importMapping: ImportMapping = {};
 
   /* Base paths to start looking for svelte components. These may be used by the vite filesystem watcher */
   const componentPaths: any[] = [];
@@ -60,7 +60,7 @@ export function createMapping({ components, module, mapping, filter }): [ImportM
   // Select methods or properties from a given module
   Object.entries(makeLiteral(module)).forEach(([moduleFrom, names]) => {
     makeArray(names).forEach(name => {
-      let importValue = `import { ${name} } from '${moduleFrom}'`;
+      let importValue = () => `import { ${name} } from '${moduleFrom}'`;
       let [origin, alias] = name.split(/\s+as\s+/);
       let key = (alias === undefined) ? origin : alias;
       importMapping[String(key).trim()] = importValue;
@@ -71,10 +71,10 @@ export function createMapping({ components, module, mapping, filter }): [ImportM
   // import things other than components
   Object.entries(makeLiteral(mapping)).forEach(([name, value]) => {
     if (typeof value === 'string') {
-      importMapping[name] = value;
+      importMapping[name] = () => value;
     }
     if (typeof value === 'function') {
-      importMapping[name] = `;let ${name} = () => { ${value()} };`;
+      importMapping[name] = () => `;let ${name} = () => { ${value()} };`;
     }
   });
 

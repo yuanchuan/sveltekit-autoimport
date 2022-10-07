@@ -15,9 +15,7 @@ export function transformCode(code: string, ast: Ast | undefined, filePath: stri
         if (declared.has(name)) return; //If the module is declared in this file, don't add an import
         if (!maybeUsed.has(name)) return; //If there is no way for this module to be used in this file, don't import it
 
-        let importValue = (typeof value == 'function')
-            ? value(path.dirname(filePath)) //Create an importstatement relative to the current file
-            : value;
+        let importValue = value(path.dirname(filePath)) //Create an import-statement relative to the current file
         imports.push(importValue);
 
     });

@@ -8,14 +8,14 @@ export function transformCode(code: string, ast: Ast | undefined, filePath: stri
 
     /* A list of import statements that need to be added to the current file */
     const imports: string[] = [];
-    Object.entries(importMapping).forEach(([name, value]) => {
+    Object.entries(importMapping).forEach(([name, getImportStatement]) => {
 
         if (/\W/.test(name)) return;    //If the ModuleName contains whitespace, it's invalid
         if (imported.has(name)) return; //If the module is already imported in this file, skip adding the import
         if (declared.has(name)) return; //If the module is declared in this file, don't add an import
         if (!maybeUsed.has(name)) return; //If there is no way for this module to be used in this file, don't import it
 
-        let importValue = value(path.dirname(filePath)) //Create an import-statement relative to the current file
+        let importValue = getImportStatement(path.dirname(filePath)) //Create an import-statement relative to the current file
         imports.push(importValue);
 
     });

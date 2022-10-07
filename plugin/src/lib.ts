@@ -3,7 +3,11 @@ import path from 'path';
 import { walk } from 'estree-walker';
 import { Ast } from './types.js';
 
+/**
+ * Finds all the .svelte files that could be autoimported based on the configuration
+ */
 export function createMapping({ components, module, mapping, filter }): [{}, any[]] {
+
   const importMapping = {};
   const componentPaths: any[] = [];
 
@@ -30,10 +34,11 @@ export function createMapping({ components, module, mapping, filter }): [{}, any
     let componentPath = path.resolve(String(thisComp));
     componentPaths.push(componentPath);
 
-    traverse(componentPath, filter, name => {
-      let moduleName = getModuleName(componentPath, name, flat, prefix);
+    traverse(componentPath, filter, filename => {
+      let moduleName = getModuleName(componentPath, filename, flat, prefix);
+      console.log(moduleName);
       importMapping[moduleName] = target => {
-        let moduleFrom = normalizePath(path.relative(target, name));
+        let moduleFrom = normalizePath(path.relative(target, filename));
         if (!moduleFrom.startsWith('.')) {
           moduleFrom = './' + moduleFrom;
         }
@@ -187,18 +192,27 @@ export function normalizePath(name) {
   return name.replace(/\\/g, '/');
 }
 
-export function getModuleName(root, name, flat, prefix) {
-  let moduleName;
+/**
+ * Resolves the name under which a given Module should be made available, based on the flat, prfix and position relative to root.
+ * @param rootPath - The root directory from which names should be resolved
+ * @param modulePath - The path to the module file, for which a name is needed
+ * @param flat - Only consider the filename. Position does not matter
+ * @param prefix - A string with which the module name should be prefixed
+ * @returns - A module name for the given path, standardized to CamelCase
+ */
+export function getModuleName(rootPath: string, modulePath: string, flat: boolean, prefix: string) {
+  let moduleName: string;
   if (flat) {
-    let parsed = path.parse(name);
-    moduleName = camelize(parsed.name);
+    let parsed = path.parse(modulePath);
     if (parsed.name === 'index') {
-      moduleName = camelize(getLastDir(parsed.dir));
+      moduleName = camelize(getLastDir(parsed.dir)); //Use the name of the directory, if the module is called "index"
+    } else {
+      moduleName = camelize(parsed.name);
     }
   } else {
-    let parsed = (root === name)
-      ? path.parse(path.parse(name).base)
-      : path.parse(path.relative(root, name));
+    let parsed = (rootPath === modulePath)
+      ? path.parse(path.parse(modulePath).base)
+      : path.parse(path.relative(rootPath, modulePath));
     moduleName = camelize(parsed.dir + '_' + parsed.name);
     if (parsed.name === 'index') {
       moduleName = camelize(parsed.dir);
@@ -210,24 +224,33 @@ export function getModuleName(root, name, flat, prefix) {
   return moduleName;
 }
 
-export function traverse(root, filter, fn) {
+/**
+ * Recursively walkt through the filesystem from the given root path, and call the callback on all files that match the given filter function
+ * @param root - The filesystem path from which to start
+ * @param filter - A function to determine if a file should be included or not
+ * @param callback - The callback to be called with all files that match the filter
+ * @returns 
+ */
+export function traverse(root: string, filter: (arg0: string) => boolean, callback: (filename: string) => any): false | string {
   if (!existsSync(root)) {
-    return false;
+    return false; //The given root path does not exist
   }
-  // single component
+
   if (statSync(root).isFile()) {
-    return root;
+    return root; // The root path is the component
   }
   if (!statSync(root).isDirectory()) {
-    return false;
+    return false; //The root is not a directory and can't be traversed any further
   }
+
+  //Recursively call traverse, and call the callback on all files that match the filter
   for (let dir of readdirSync(root)) {
     dir = path.join(root, dir);
     let stat = statSync(dir);
     if (stat.isDirectory()) {
-      traverse(dir, filter, fn);
+      traverse(dir, filter, callback);
     } else if (stat.isFile() && filter(dir)) {
-      fn(dir);
+      callback(dir);
     }
   }
 }

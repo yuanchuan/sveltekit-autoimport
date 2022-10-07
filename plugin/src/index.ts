@@ -1,11 +1,11 @@
-import path from 'path';
+
 import { createFilter } from '@rollup/pluginutils';
-import MagicString from 'magic-string';
-import { createMapping, walkAST, prependTo, makeArray } from './lib.js';
+import { createMapping, makeArray } from './lib.js';
 import type { Plugin } from 'vite'
 import { enforcePluginOrdering, resolveSveltePreprocessor } from './lib/configHelpers.js';
-import { Ast, Preprocessor } from './types.js';
+import { Preprocessor } from './types.js';
 import { genrateAST } from './lib/transformHelpers.js';
+import { transformCode } from './lib/transformCode.js';
 
 interface PluginOptions {
   components?: string[],
@@ -37,41 +37,7 @@ export default function autowire({ components, module, mapping, include, exclude
       createMapping({ components, module, mapping, filter });
   }
 
-  function transformCode(code: string, ast: Ast | undefined, filename: string) {
-    const { imported, maybeUsed, declared } = walkAST(ast);
-    const imports = [];
-    Object.entries(importMapping).forEach(([name, value]) => {
-      if (/\W/.test(name)) {
-        return false;
-      }
-      if (imported.has(name)) {
-        return false;
-      }
-      if (declared.has(name)) {
-        return false;
-      }
-      if (maybeUsed.has(name)) {
-        let importValue = (typeof value == 'function')
-          ? value(path.dirname(filename))
-          : value;
-        imports.push(importValue);
-      }
-    });
-    if (imports.length) {
-      let value = imports.join('\n');
-      if (ast.instance) {
-        code = prependTo(code, value, ast.instance.start);
-      } else {
-        code += `\n<script>${value}</script>`;
-      }
-    }
-    let s = new MagicString(code, { filename });
-    return {
-      code: s.toString(),
-      map: s.generateMap(),
-    }
-  }
-
+  
   updateMapping();
 
   return {
@@ -88,7 +54,7 @@ export default function autowire({ components, module, mapping, include, exclude
     async transform(code, filename) {
       if (!filter(filename)) return;
       const ast = await genrateAST(code, sveltePreprocessor, filename)
-      return transformCode(code, ast, filename);
+      return transformCode(code, ast, filename, importMapping);
     },
 
     configureServer(server) {

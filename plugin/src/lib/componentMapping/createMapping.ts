@@ -47,6 +47,9 @@ export function createMapping(components: ComponentsConfig, module: ModuleConfig
             //If an key is imported with "import x as y", we need to trigger an import on the alias y, not on the originx
             const [origin, alias] = moduleImport.split(/\s+as\s+/);
             importMapping[alias ?? origin] = importStatement
+
+            const typeDeclaration = `declare const ${alias ?? origin}: typeof import("${moduleFrom}")["${origin}"];`
+            componentTypeDeclarations.push(typeDeclaration);
         }
     })
 

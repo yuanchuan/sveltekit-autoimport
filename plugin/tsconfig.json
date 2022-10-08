@@ -7,7 +7,7 @@
         "module": "esnext",
         "target": "ESNext",
         "moduleResolution" : "Node16",
-        "skipLibCheck": true
+        "skipLibCheck": true,
     },
     "include": ["src"],
     "exclude": ["**/node_modules/**/", "dist"]

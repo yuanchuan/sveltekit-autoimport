@@ -4,7 +4,7 @@ import autowire from 'sveltekit-autowire'
 
 const config: UserConfig = {
 	plugins: [autowire({
-		components:  [{ name: './src/lib', flat: true } ],
+		components:  [{ directory: './src/lib', flat: true } ],
 	}), sveltekit()]
 };
 

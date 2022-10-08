@@ -1,43 +1,34 @@
 
 import { createFilter } from '@rollup/pluginutils';
-import { createMapping, makeArray } from './lib.js';
 import type { Plugin } from 'vite'
 import { enforcePluginOrdering, resolveSveltePreprocessor } from './lib/configHelpers.js';
-import { ImportMapping, Preprocessor } from './types.js';
+import { ImportMapping, PluginUserConfig, Preprocessor } from './types.js';
 import { genrateAST } from './lib/transformHelpers.js';
 import { transformCode } from './lib/transformCode.js';
+import { createMapping } from './lib/componentMapping/createMapping.js';
+import { standardizeConfing } from './lib/config/standardizedConfig.js';
 
-interface PluginOptions {
-  components?: string[],
-  mapping?: Record<string, string>,
-  module?: Record<string, string[]>,
-  include?: string[],
-  exclude?: string[]
-}
+export default function autowire(userConfig: PluginUserConfig = {}): Plugin {
 
+  const { components, mapping, module, include, exclude } = standardizeConfing(userConfig)
 
-export default function autowire({ components, module, mapping, include, exclude }: PluginOptions = {}): Plugin {
-  if (!include) {
-    include = ['**/*.svelte'];
-  }
   const filter = createFilter(include, [
-    ...makeArray(exclude),
+    ...exclude,
     '**/node_modules/**',
     '**/.git/**',
     '**/.svelte-kit/**',
     '**/.svelte/**'
   ]);
 
-  let importMapping : ImportMapping= {};
+  let importMapping: ImportMapping = {};
   let componentPaths = [];
   let sveltePreprocessor: Preprocessor | undefined;
 
   function updateMapping() {
-    [importMapping, componentPaths] =
-      createMapping({ components, module, mapping, filter });
+    [importMapping, componentPaths] = createMapping(components, module, mapping, filter);
   }
 
-  
+
   updateMapping();
 
   return {

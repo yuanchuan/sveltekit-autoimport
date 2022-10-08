@@ -1,1 +1,1 @@
-<button>2</button>
+<button>Slightly less cool button</button>

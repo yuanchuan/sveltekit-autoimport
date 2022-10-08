@@ -1,4 +1,3 @@
-import { getLastDir } from "../../lib.js";
 import path from 'path'
 
 /**
@@ -44,5 +43,9 @@ function camelize(name) {
 
 function toUpperCase(_, c) {
     return String(c).toUpperCase();
-  }
-  
+}
+
+function getLastDir(dir) {
+    let dirs = dir.split(path.sep).filter(n => n !== 'index');
+    return dirs[dirs.length - 1];
+}

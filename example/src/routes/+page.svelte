@@ -1,1 +1,2 @@
-<MyButton text="Hello World"/>
+<MyButton text="Very cool button"/>
+<MyOtherButton/>

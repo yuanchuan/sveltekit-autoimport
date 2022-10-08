@@ -1,4 +1,4 @@
-import { walkAST } from "./parsing/walkAST";
+import { walkAST } from "./parsing/walkAST.js";
 import MagicString from 'magic-string';
 import path from 'path';
 import { Ast, ImportMapping } from "../types.js";

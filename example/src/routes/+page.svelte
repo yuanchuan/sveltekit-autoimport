@@ -1,2 +1,3 @@
 <MyButton text="Very cool button"/>
-<MyOtherButton/>
+<MyOtherButton deez="Hello World"/>
+<MyThirdComponent/>

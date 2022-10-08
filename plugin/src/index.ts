@@ -7,6 +7,7 @@ import { genrateAST } from './lib/transformHelpers.js';
 import { transformCode } from './lib/transformCode.js';
 import { createMapping } from './lib/componentMapping/createMapping.js';
 import { standardizeConfing } from './lib/config/standardizedConfig.js';
+import { writeTypeDeclarations } from './lib/writeTypeDeclarations.js';
 
 export default function autowire(userConfig: PluginUserConfig = {}): Plugin {
 
@@ -27,7 +28,9 @@ export default function autowire(userConfig: PluginUserConfig = {}): Plugin {
   let sveltePreprocessor: Preprocessor | undefined;
 
   function updateMapping() {
-    importMapping = createMapping(components, module, mapping, filter);
+    let componentTypeDeclarations : string[]; 
+    [importMapping, componentTypeDeclarations] = createMapping(components, module, mapping, filter);
+    writeTypeDeclarations(componentTypeDeclarations);
   }
 
 

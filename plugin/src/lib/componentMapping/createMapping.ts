@@ -7,10 +7,12 @@ import { ComponentsConfig, ImportMapping, MappingConfig, ModuleConfig } from "..
 /**
  * Finds all the .svelte files that could be autoimported based on the configuration
  */
-export function createMapping(components: ComponentsConfig, module: ModuleConfig, mapping: MappingConfig, filter): ImportMapping {
+export function createMapping(components: ComponentsConfig, module: ModuleConfig, mapping: MappingConfig, filter): [ImportMapping, string[]] {
 
     /* Map keys that may need to be imported to import statements */
     const importMapping: ImportMapping = {};
+
+    let componentTypeDeclarations: string[] = [];
 
     // Read all components from given paths
     // and transform the import names into CamelCase
@@ -22,15 +24,18 @@ export function createMapping(components: ComponentsConfig, module: ModuleConfig
           and returns functions, which generate the necessary import statements to import the components,
           relative to any modules they might be imported from.
         */
-        traverse(component.directory, filter, filename => {
-            let moduleName = getModuleName(component.directory, filename, component.flat, component.prefix);
+        traverse(component.directory, filter, filePath => {
+            let moduleName = getModuleName(component.directory, filePath, component.flat, component.prefix);
             importMapping[moduleName] = target => {
-                let moduleFrom = normalizePath(path.relative(target, filename));
+                let moduleFrom = normalizePath(path.relative(target, filePath));
                 if (!moduleFrom.startsWith('.')) {
                     moduleFrom = './' + moduleFrom;
                 }
                 return `import ${moduleName} from '${moduleFrom}'`
             }
+
+            const typeDeclaration = `declare const ${moduleName}: typeof import("${"./" + path.relative("./src", filePath)}")["default"];`
+            componentTypeDeclarations.push(typeDeclaration);
         });
     });
 
@@ -49,5 +54,5 @@ export function createMapping(components: ComponentsConfig, module: ModuleConfig
         importMapping[name] = () => value;
     });
 
-    return importMapping;
+    return [importMapping, componentTypeDeclarations];
 }

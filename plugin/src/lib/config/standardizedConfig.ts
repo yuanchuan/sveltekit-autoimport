@@ -1,5 +1,5 @@
 import { PluginConfig, PluginUserConfig } from "../../types.js";
-
+import path from 'path'
 
 
 export function standardizeConfing(userConfig : PluginUserConfig) : PluginConfig {
@@ -14,11 +14,11 @@ export function standardizeConfing(userConfig : PluginUserConfig) : PluginConfig
     if(userConfig.components) {
         for(const component of userConfig.components) {
             if(typeof component !== "string") config.components.push({
-                directory: component.directory,
+                directory: path.resolve(component.directory),
                 flat: component.flat ?? false,
                 prefix: component.prefix ?? ""
             });
-            else config.components.push({directory: component, flat: false, prefix: ""});
+            else config.components.push({directory: path.resolve(component), flat: false, prefix: ""});
         }
     }
 

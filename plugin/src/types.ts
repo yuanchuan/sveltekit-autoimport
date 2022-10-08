@@ -14,6 +14,7 @@ export type ComponentsUserConfig = string | {
 }[]
 
 export type ComponentsConfig = {
+    /* ABSOLUTE path to the directory */
     directory: string,
     flat: boolean,
     prefix: string

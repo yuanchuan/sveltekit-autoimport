@@ -1,5 +1,5 @@
 import { walk } from 'estree-walker';
-import { Ast } from './types.js';
+import { Ast } from '../../types.js';
 
 export function walkAST(ast: Ast | undefined) {
   const imported = new Set();

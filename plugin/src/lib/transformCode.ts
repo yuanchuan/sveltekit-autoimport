@@ -1,4 +1,4 @@
-import { walkAST } from "../lib.js";
+import { walkAST } from "./parsing/walkAST";
 import MagicString from 'magic-string';
 import path from 'path';
 import { Ast, ImportMapping } from "../types.js";
@@ -29,7 +29,6 @@ export function transformCode(code: string, ast: Ast | undefined, filePath: stri
             code += `\n<script>${value}</script>`; //No script tag is defined inside the file, so add one
         }
     }
-    //TODO propper sourcemaps
     let s = new MagicString(code, { filename: filePath });
     return {
         code: s.toString(),

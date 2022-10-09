@@ -57,7 +57,8 @@ export default function autowire(userConfig: PluginUserConfig = {}): Plugin {
         server.watcher
           .add(componentPaths)
           .on('add', updateMapping)
-          .on('unlink', updateMapping);
+          .on('unlink', updateMapping)
+          .on('ready', updateMapping)
       }
     }
   }

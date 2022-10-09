@@ -1,7 +1,7 @@
 {
   "name": "sveltekit-autowire",
-  "version": "1.6.9",
-  "description": "Automatically import svelte components",
+  "version": "0.1.0",
+  "description": "Reduce SvelteKit Boilerplate",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -15,13 +15,13 @@
     "vite",
     "sveltekit"
   ],
-  "author": "yuanchuan, LorisSigrist",
+  "author": "LorisSigrist",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/LorisSigrist/sveltekit-autoimport/issues"
+    "url": "https://github.com/LorisSigrist/sveltekit-autowire/issues"
   },
   "type": "module",
-  "homepage": "https://github.com/LorisSigrist/sveltekit-autoimport#readme",
+  "homepage": "https://github.com/LorisSigrist/sveltekit-autowire#readme",
   "dependencies": {
     "@rollup/pluginutils": "^4.1.0",
     "estree-walker": "^2.0.2",
@@ -34,5 +34,9 @@
   },
   "peerDependencies": {
     "vite" : "*"
-  }
+  },
+  "files": [
+    "dist/**",
+    "package.json"
+  ]
 }

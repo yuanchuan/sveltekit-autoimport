@@ -6,6 +6,7 @@ export type Config = Parameters<Plugin["configResolved"]>[0];
 export type Preprocessor = Parameters<typeof preprocess>[1];
 export type Ast = ReturnType<typeof parse>
 export type ImportMapping = Record<string, ((target: string) => string)>;
+export type TypeDeclarationMapping = Record<string, ((target: string) => string)>;
 
 export type ComponentsUserConfig = string | {
     /** A relative or absolute path to a component, or a directory in which to look for components */

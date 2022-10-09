@@ -1,8 +1,7 @@
-
 import { createFilter } from '@rollup/pluginutils';
 import type { Plugin } from 'vite'
 import { enforcePluginOrdering, resolveSveltePreprocessor } from './lib/configHelpers.js';
-import type { ImportMapping, PluginUserConfig, Preprocessor } from './types.js';
+import type { ImportMapping, PluginUserConfig, Preprocessor, TypeDeclarationMapping } from './types.js';
 import { genrateAST } from './lib/transformHelpers.js';
 import { transformCode } from './lib/transformCode.js';
 import { createMapping } from './lib/componentMapping/createMapping.js';
@@ -28,7 +27,7 @@ export default function autowire(userConfig: PluginUserConfig = {}): Plugin {
   let sveltePreprocessor: Preprocessor | undefined;
 
   function updateMapping() {
-    let componentTypeDeclarations : string[]; 
+    let componentTypeDeclarations : TypeDeclarationMapping; 
     [importMapping, componentTypeDeclarations] = createMapping(components, module, mapping, filter);
     writeTypeDeclarations(componentTypeDeclarations);
   }

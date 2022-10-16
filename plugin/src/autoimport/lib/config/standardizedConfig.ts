@@ -1,9 +1,9 @@
-import { PluginConfig, PluginUserConfig } from "../../types.js";
+import { AutoimportConfig, AutoimportUserConfig } from "../../types.js";
 import path from 'path'
 
 
-export function standardizeConfing(userConfig : PluginUserConfig) : PluginConfig {
-    const config : PluginConfig = {
+export function standardizeConfing(userConfig : AutoimportUserConfig) : AutoimportConfig {
+    const config : AutoimportConfig = {
         include: userConfig.include ?? ['**/*.svelte'],
         exclude: userConfig.exclude ?? [],
         module: {},

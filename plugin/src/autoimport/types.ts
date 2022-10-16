@@ -30,7 +30,7 @@ export type MappingConfig = MappingUserConfig;
 export type ModuleConfig = Record<string, string[]>;
 export type ModuleUserConfig = Record<string, string[] | string>;
 
-export interface PluginUserConfig {
+export interface AutoimportUserConfig {
     components?: ComponentsUserConfig;
     mapping?: MappingUserConfig,
     module?: ModuleUserConfig,
@@ -38,7 +38,7 @@ export interface PluginUserConfig {
     exclude?: string[]
 }
 
-export interface PluginConfig {
+export interface AutoimportConfig {
     /**  A list of places to look for components */
     components: ComponentsConfig,
     /** Some magic strings to import from */

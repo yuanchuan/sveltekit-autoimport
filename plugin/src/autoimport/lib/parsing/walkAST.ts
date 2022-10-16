@@ -1,4 +1,4 @@
-import { walk } from 'estree-walker';
+import { walk } from 'svelte/compiler';
 import { Ast } from '../../types.js';
 
 export function walkAST(ast: Ast | undefined) {

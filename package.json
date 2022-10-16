@@ -2,5 +2,8 @@
     "workspaces": [
         "example",
         "plugin"
-    ]
+    ],
+    "dependencies": {
+        "upgrade": "^1.1.0"
+    }
 }

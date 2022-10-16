@@ -4,9 +4,11 @@ import { autowire } from 'sveltekit-autowire'
 
 const config: UserConfig = {
 	plugins: [autowire({
-		components: [{ directory: './src/lib', flat: true }],
-		module: {
-			"svelte": ["onMount"]
+		autoimport: {
+			components: [{ directory: './src/lib', flat: true }],
+			module: {
+				"svelte": ["onMount"]
+			}
 		}
 	}), sveltekit()]
 };

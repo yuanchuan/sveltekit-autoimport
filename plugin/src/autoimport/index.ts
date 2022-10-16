@@ -49,7 +49,8 @@ export default function autowire(userConfig: AutoimportUserConfig = {}): Plugin 
     async transform(code, filename) {
       if (!filter(filename)) return;
       const ast = await genrateAST(code, sveltePreprocessor, filename)
-      return transformCode(code, ast, filename, importMapping);
+      const result = transformCode(code, ast, filename, importMapping);
+      return result;
     },
 
     configureServer(server) {

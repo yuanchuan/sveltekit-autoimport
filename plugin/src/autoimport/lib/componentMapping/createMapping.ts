@@ -26,7 +26,7 @@ export function createMapping(components: ComponentsConfig, module: ModuleConfig
         */
         traverse(component.directory, filter, filePath => {
             let moduleName = getModuleName(component.directory, filePath, component.flat, component.prefix);
-            
+
             importMapping[moduleName] = target => {
                 let moduleFrom = normalizePath(path.relative(target, filePath));
                 if (!moduleFrom.startsWith('.')) {
@@ -47,13 +47,23 @@ export function createMapping(components: ComponentsConfig, module: ModuleConfig
 
     Object.entries(module).forEach(([moduleFrom, moduleImports]) => {
         for (const moduleImport of moduleImports) {
-            const importStatement = () => `import { ${moduleImport} } from '${moduleFrom}'`;
+            let typeDeclaration: () => string;
+            let importStatement: () => string;
 
             //If an key is imported with "import x as y", we need to trigger an import on the alias y, not on the originx
             const [origin, alias] = moduleImport.split(/\s+as\s+/);
-            importMapping[alias ?? origin] = importStatement
 
-            const typeDeclaration = () =>`declare const ${alias ?? origin}: typeof import("${moduleFrom}")["${origin}"];`
+            //If the origin is "*", we need to import as a namespace.
+            if (origin.trim().startsWith("*")) {
+                importStatement = () => `import  ${moduleImport}  from '${moduleFrom}'`;
+                typeDeclaration = () => `declare const ${alias ?? origin}: typeof import("${moduleFrom}");`
+            }
+            else {
+                importStatement = () => `import { ${moduleImport} } from '${moduleFrom}'`;
+                typeDeclaration = () => `declare const ${alias ?? origin}: typeof import("${moduleFrom}")["${origin}"];`
+            }
+
+            importMapping[alias ?? origin] = importStatement
             componentTypeDeclarations[alias ?? origin] = typeDeclaration;
         }
     })

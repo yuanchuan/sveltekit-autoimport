@@ -5,9 +5,10 @@ import { autowire } from 'sveltekit-autowire'
 const config: UserConfig = {
 	plugins: [autowire({
 		autoimport: {
-			components: [{ directory: './src/lib', flat: true }],
+			components: [{ directory: './src/lib/myComponents', flat: true }],
 			module: {
-				"svelte": ["onMount"]
+				"svelte": ["onMount"],
+				"$lib/Icons": "* as Icons"
 			}
 		}
 	}), sveltekit()]

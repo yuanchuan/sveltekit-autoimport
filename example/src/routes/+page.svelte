@@ -8,5 +8,6 @@
 <MyOtherButton deez="Hello World"/>
 <MyThirdComponent/>
 
-<Icons.Account name="Test"/>
+<Icons.Account/>
 <Icons.Home/>
+<Icons.Generic name="Generic"/>

@@ -55,7 +55,7 @@ export function createMapping(components: ComponentsConfig, module: ModuleConfig
 
             //If the origin is "*", we need to import as a namespace.
             if (origin.trim().startsWith("*")) {
-                importStatement = () => `import  ${moduleImport}  from '${moduleFrom}'`;
+                importStatement = () => `import ${moduleImport} from '${moduleFrom}'`;
                 typeDeclaration = () => `declare const ${alias ?? origin}: typeof import("${moduleFrom}");`
             }
             else {

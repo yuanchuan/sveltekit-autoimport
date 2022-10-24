@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {  ModuleConfig } from '../../types.js'
-import { createMapping } from './createMapping'
+import { createMapping } from './createMapping.js'
 
 describe("componentMapping", () => {
     it("supports importing modules as namespaces (import * as Namespace from 'module')", () => {

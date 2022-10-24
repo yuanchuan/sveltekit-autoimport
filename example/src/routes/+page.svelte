@@ -11,3 +11,4 @@
 <Icons.Account/>
 <Icons.Home/>
 <Icons.Generic name="Generic"/>
+<Icons.Generic name="Other"/>

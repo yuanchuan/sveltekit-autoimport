@@ -4,7 +4,7 @@ import { enforcePluginOrdering, resolveSveltePreprocessor } from './lib/configHe
 import type { ImportMapping, AutoimportUserConfig, Preprocessor, TypeDeclarationMapping } from './types.js';
 import { genrateAST } from './lib/transformHelpers.js';
 import { transformCode } from './lib/transformCode.js';
-import { createMapping } from './lib/componentMapping/createMapping.js';
+import { createMapping } from './lib/importMapping/createMapping.js';
 import { standardizeConfing } from './lib/config/standardizedConfig.js';
 import { writeTypeDeclarations } from './lib/writeTypeDeclarations.js';
 

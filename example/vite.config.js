@@ -4,11 +4,13 @@ import autoImport from 'sveltekit-autoimport';
 export default {
   plugins: [
     autoImport({
+      include: ['**/*.(svelte|md)'],
+
       components: [
         './src/components',
 
         /* custom prefix */
-        { name: './src/routes/_shared', prefix: 'Shared' },
+        { name: './src/_shared', prefix: 'Shared' },
       ],
 
       module: {

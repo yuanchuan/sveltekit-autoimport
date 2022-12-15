@@ -1,3 +1,7 @@
+<p>
+  <a href="/mdx">MDX page</a>
+</p>
+
 <main>
 
   <h1>Welcome to SvelteKit</h1>

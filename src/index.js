@@ -61,6 +61,10 @@ export default function autoImport({ components, module, mapping, include, exclu
     }
   }
 
+  function printParseError(e) {
+    console.warn(`(${e.code}) ${e.message}: Line ${e.start.line}, column ${e.start.column}. \n\n${e.frame}`);
+  }
+
   updateMapping();
 
   return {
@@ -105,7 +109,7 @@ export default function autoImport({ components, module, mapping, include, exclu
         }
         ast = svelte.parse(code);
       } catch (e) {
-        console.warn('Error on preprocess:', e.message);
+        printParseError(e);
         return null;
       }
       return transformCode(code, ast, filename);
@@ -129,6 +133,7 @@ export default function autoImport({ components, module, mapping, include, exclu
       try {
         ast = svelte.parse(content);
       } catch (e) {
+        printParseError(e);
         return null;
       }
       return transformCode(content, ast, filename);

@@ -51,7 +51,7 @@ export default function autoImport({ components, module, mapping, include, exclu
       if (ast.instance) {
         code = prependTo(code, value, ast.instance.start);
       } else {
-        code += `\n<script>${ value }</script>`;
+        code += `\n\n<script>${ value }</script>`;
       }
     }
     let s = new MagicString(code, { filename });

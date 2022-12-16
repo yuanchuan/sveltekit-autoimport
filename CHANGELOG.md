@@ -1,3 +1,7 @@
+## 1.6.10
+
+* Add extra line for injected script tag.
+
 ## 1.6.9
 
 * Update docs and example.

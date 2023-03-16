@@ -85,4 +85,18 @@ describe('walk ast', () => {
     expect(Array.from(maybeUsed)).toEqual(['A']);
   });
 
+  test('action name', () => {
+    let { maybeUsed } = walkAST(svelte.parse(`
+      <Button use:action />
+    `));
+    expect(Array.from(maybeUsed)).toEqual(['Button', 'action']);
+  });
+
+  test('action name and arguments', () => {
+    let { maybeUsed } = walkAST(svelte.parse(`
+      <Button use:action={{ key: unique }} />
+    `));
+    expect(Array.from(maybeUsed)).toEqual(['Button', 'action', 'unique']);
+  });
+
 });

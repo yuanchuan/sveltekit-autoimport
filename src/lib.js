@@ -140,10 +140,13 @@ export function walkAST(ast) {
         if (node.type == 'InlineComponent' && !/^svelte:/.test(node.name)) {
           maybeUsed.add(String(node.name).split('.')[0]);
         }
+        if (node.type === 'Action') {
+          maybeUsed.add(node.name);
+        }
         if (node.type === 'Identifier') {
           switch (parent.type) {
             case 'Property': {
-              if (parent.vaue && parent.value.name === node.name) {
+              if (parent.value && parent.value.name === node.name) {
                 maybeUsed.add(node.name);
               }
               break;

@@ -1,3 +1,9 @@
+## 1.6.11
+
+* Fix recognition action names.
+* Print parse error in detail.
+
+
 ## 1.6.10
 
 * Add extra line for injected script tag.

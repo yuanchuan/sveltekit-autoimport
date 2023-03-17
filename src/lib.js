@@ -137,17 +137,18 @@ export function walkAST(ast) {
   if (ast.html && ast.html.children) {
     walk(ast.html.children, {
       enter(node, parent) {
-        if (node.type == 'InlineComponent' && !/^svelte:/.test(node.name)) {
-          maybeUsed.add(String(node.name).split('.')[0]);
+        let { type, name } = node;
+        if (type == 'InlineComponent' && !/^svelte:/.test(name)) {
+          maybeUsed.add(String(name).split('.')[0]);
         }
-        if (node.type === 'Action') {
-          maybeUsed.add(node.name);
+        if (type === 'Action' || type === 'Transition' || type === 'Animation') {
+          maybeUsed.add(name);
         }
-        if (node.type === 'Identifier') {
+        if (type === 'Identifier') {
           switch (parent.type) {
             case 'Property': {
-              if (parent.value && parent.value.name === node.name) {
-                maybeUsed.add(node.name);
+              if (parent.value && parent.value.name === name) {
+                maybeUsed.add(name);
               }
               break;
             }
@@ -156,7 +157,7 @@ export function walkAST(ast) {
             case 'CallExpression':
             case 'NewExpression':
             case 'MemberExpression': {
-              maybeUsed.add(node.name);
+              maybeUsed.add(name);
               break;
             }
           }

@@ -99,4 +99,25 @@ describe('walk ast', () => {
     expect(Array.from(maybeUsed)).toEqual(['Button', 'action', 'unique']);
   });
 
+  test('action name and arguments', () => {
+    let { maybeUsed } = walkAST(svelte.parse(`
+      <Button use:action={{ key: unique }} />
+    `));
+    expect(Array.from(maybeUsed)).toEqual(['Button', 'action', 'unique']);
+  });
+
+  test('transtition type', () => {
+    let { maybeUsed } = walkAST(svelte.parse(`
+      <Button in:action={{ key: unique }} out:action2 />
+    `));
+    expect(Array.from(maybeUsed)).toEqual(['Button', 'action', 'unique', 'action2']);
+  });
+
+  test('animation type', () => {
+    let { maybeUsed } = walkAST(svelte.parse(`
+      <Button animate:flip={{ key: unique }} />
+    `));
+    expect(Array.from(maybeUsed)).toEqual(['Button', 'flip', 'unique']);
+  });
+
 });

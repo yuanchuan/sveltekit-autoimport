@@ -181,3 +181,8 @@ export default {
   ]
 }
 ```
+
+
+## Example
+
+https://stackblitz.com/edit/vitejs-vite-tfpzge?file=src%2Froutes%2F%2Bpage.svelte

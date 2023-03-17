@@ -1,11 +1,6 @@
-## 1.6.12
+## 1.7.0
 
-* Fix recognition transition and animation names.
-
-
-## 1.6.11
-
-* Fix recognition action names.
+* Support reading transition, animation, and action names.
 * Print parse error in detail.
 
 

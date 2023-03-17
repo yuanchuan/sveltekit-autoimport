@@ -1,3 +1,8 @@
+## 1.6.12
+
+* Fix recognition transition and animation names.
+
+
 ## 1.6.11
 
 * Fix recognition action names.

@@ -1,3 +1,8 @@
+## 1.7.1
+
+* Add sveltekit as peer dependency (#35)
+
+
 ## 1.7.0
 
 * Support reading transition, animation, and action names.

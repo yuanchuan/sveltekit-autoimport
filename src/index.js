@@ -62,6 +62,10 @@ export default function autoImport({ components, module, mapping, include, exclu
   }
 
   function printParseError(e) {
+    if(e.start?.line === undefined) {
+      console.warn('Unexpected error occurred while trying to parse file:');
+      throw e;
+    }
     console.warn(`(${e.code}) ${e.message}: Line ${e.start.line}, column ${e.start.column}. \n\n${e.frame}`);
   }
 

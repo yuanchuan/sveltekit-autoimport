@@ -1,3 +1,8 @@
+## 1.8.0
+
+* Update peer dependency to support SK >= 1.0.0.
+* Feat: better error message when an unexpected error occurs when parsing. (#37 by @Refzlund)
+
 ## 1.7.1
 
 * Add sveltekit as peer dependency (#35)

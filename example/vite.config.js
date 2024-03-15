@@ -4,8 +4,6 @@ import autoImport from 'sveltekit-autoimport';
 export default {
   plugins: [
     autoImport({
-      include: ['**/*.(svelte|md)'],
-
       components: [
         './src/components',
 

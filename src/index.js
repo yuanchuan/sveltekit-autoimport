@@ -5,7 +5,7 @@ import { createFilter } from '@rollup/pluginutils';
 import MagicString from 'magic-string';
 import { createMapping, walkAST, prependTo, normalizePath, makeArray } from './lib.js';
 
-export default function autoImport({ components, module, mapping, include, exclude } = {}) {
+export default function autoImport({ components, module, mapping, include, exclude, configFile = true } = {}) {
   if (!include) {
     include = ['**/*.svelte'];
   }
@@ -90,6 +90,7 @@ export default function autoImport({ components, module, mapping, include, exclu
           ...plugins.slice(indexPluginSvelte + 1)
         ];
       }
+      if (!configFile) return;
       try {
         let dirname = path.dirname(fileURLToPath(import.meta.url));
         let relative = path.relative(dirname, config.inlineConfig.root || config.root);

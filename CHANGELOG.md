@@ -1,3 +1,7 @@
+## 1.8.1
+
+* Add `configFile` option to read `preprocess` from `svelte.config.js`. (#43 by @gengns)
+
 ## 1.8.0
 
 * Update peer dependency to support SK >= 1.0.0.

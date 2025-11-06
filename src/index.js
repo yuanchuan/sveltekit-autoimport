@@ -1,5 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { existsSync } from 'fs';
 import * as svelte from 'svelte/compiler';
 import { createFilter } from '@rollup/pluginutils';
 import MagicString from 'magic-string';
@@ -90,16 +91,19 @@ export default function autoImport({ components, module, mapping, include, exclu
           ...plugins.slice(indexPluginSvelte + 1)
         ];
       }
-      // Try reading preprocess from svelte.config.js
+      // Try reading preprocess from svelte.config.js or svelte.config.ts
       if (configFile) {
         try {
           let dirname = path.dirname(fileURLToPath(import.meta.url));
           let relative = path.relative(dirname, config.inlineConfig.root || config.root);
-          let configFile = path.join(relative, './svelte.config.js');
+          let configFiles = ['./svelte.config.ts', './svelte.config.js'];
+          let configFile = configFiles
+            .map(file => path.join(relative, file))
+            .find(path => existsSync(path));
           let pkg = await import(normalizePath('./' + configFile));
           preprocess = pkg.default.preprocess || [];
         } catch(e) {
-          console.warn('Error reading svelte.config.js');
+          console.warn('Error reading svelte.config.js or svelte.config.ts');
         }
       }
     },

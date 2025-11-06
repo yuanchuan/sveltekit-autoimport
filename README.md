@@ -175,7 +175,7 @@ export default {
       // node_modules is ignored by default
       exclude: ['**/node_modules/**'],
 
-      // if reading svelte.config.js to get preprocesses
+      // if reading svelte.config.js or svelte.config.ts to get preprocesses
       configFile: true
 
     }),

@@ -1,3 +1,7 @@
+## 1.8.2
+
+Add support for `svelte.config.ts`. (#44 by @ryoppippi)
+
 ## 1.8.1
 
 * Add `configFile` option to read `preprocess` from `svelte.config.js`. (#43 by @gengns)
